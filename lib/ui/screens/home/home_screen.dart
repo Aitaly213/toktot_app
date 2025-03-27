@@ -11,18 +11,18 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Location _locationController = new Location();
+  Set<Marker> _markers = {};
 
-  static const CameraPosition _kGooglePlex = CameraPosition(
+  static const _kGooglePlex = CameraPosition(
     target: LatLng(42.875639, 74.603806),
     zoom: 13,
   );
-  static const LatLng _pLoca = LatLng(42.87926, 74.61614);
+
   LatLng? _currentP = null;
 
   @override
   void initState() {
     super.initState();
-
     getLocationUpdates();
   }
 
@@ -32,13 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         body: GoogleMap(
           initialCameraPosition: _kGooglePlex,
-          markers: {
-            Marker(
-                markerId: MarkerId("_currentLocation"),
-                icon: BitmapDescriptor.defaultMarkerWithHue(
-                    BitmapDescriptor.hueBlue),
-                position: _pLoca)
-          },
+          markers: _markers,
         ),
       ),
     );
@@ -49,10 +43,11 @@ class _HomeScreenState extends State<HomeScreen> {
     PermissionStatus _permissionGranted;
 
     _serviceEnabled = await _locationController.serviceEnabled();
-    if (_serviceEnabled) {
+    if (!_serviceEnabled) {
       _serviceEnabled = await _locationController.requestService();
-    } else {
-      return;
+      if (!_serviceEnabled) {
+        return;
+      }
     }
 
     _permissionGranted = await _locationController.hasPermission();
@@ -63,18 +58,22 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }
 
-    _locationController.onLocationChanged
-        .listen((LocationData currentLocation) {
-      if (currentLocation.latitude != null &&
-          currentLocation.longitude != null) {
+    _locationController.onLocationChanged.listen((LocationData currentLocation) {
+      if (currentLocation.latitude != null && currentLocation.longitude != null) {
         setState(() {
-          _currentP =
-              LatLng(currentLocation.latitude!, currentLocation.longitude!);
+          _currentP = LatLng(currentLocation.latitude!, currentLocation.longitude!);
+
+          // Обновляем маркеры
+          _markers = {
+            Marker(
+              markerId: MarkerId("_currentLocation"),
+              icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+              position: _currentP!,
+              infoWindow: InfoWindow(title: "Ваше местоположение"),
+            )
+          };
 
           print(_currentP);
-          print(
-              "-----------------------------------------------------------------------------"
-              "-----------------------------------------------------------------------------");
         });
       }
     });
