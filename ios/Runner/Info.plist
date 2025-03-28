@@ -7,6 +7,8 @@
 
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
     <string>We need your location to track it even when the app is in the background.</string>
+    <key>io.flutter.embedded_views_preview</key>
+    <true/>
 
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
