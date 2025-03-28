@@ -25,13 +25,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             },
             children: [
               _buildPage(
-                title: 'Добро пожаловать в MyApp',
+                title: 'Добро пожаловать в Toktot',
                 description: 'Это первая страница нашей онбординг.',
                 imagePath: 'assets/images/first.png',
               ),
               _buildPage(
                 title: 'Исследуйте функции',
-                description: 'Откройте для себя все функции, которые мы предлагаем.',
+                description:
+                    'Откройте для себя все функции, которые мы предлагаем.',
                 imagePath: 'assets/images/second.png',
               ),
               _buildPage(
@@ -78,7 +79,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     curve: Curves.easeInOut,
                   );
                 } else {
-                  Navigator.pushNamed(context, '/registration');
+                  Navigator.pushReplacementNamed(context, '/consent');
                 }
               },
               style: ElevatedButton.styleFrom(

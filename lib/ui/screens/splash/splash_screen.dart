@@ -1,33 +1,30 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'splash_cubit.dart';
 
-class SplashScreen extends StatefulWidget {
+/// Screen for displaying the splash screen.
+class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    super.initState();
-    Timer(Duration(seconds: 2), () {
-      Navigator.pushReplacementNamed(context, '/onboarding');
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFF246BFD), // Цвет фона
-      body: Center(
-        child: Text(
-          'Tokto',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 48,
-            fontWeight: FontWeight.bold,
+    return BlocProvider(
+      create: (context) => SplashCubit()..startTimer(), // Start the timer when the cubit is created
+      child: BlocListener<SplashCubit, void>(
+        listener: (context, state) {
+          Navigator.pushReplacementNamed(context, '/onboarding'); // Navigate to onboarding screen after timer ends
+        },
+        child: Scaffold(
+          backgroundColor: Color(0xFF246BFD), // Background color of the splash screen
+          body: Center(
+            child: Text(
+              'Toktot', // Application name
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 48,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ),
       ),
