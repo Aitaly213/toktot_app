@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   static const _posDestination = LatLng(42.828061, 74.601591);
   static const _posOrigin = LatLng(42.808061, 74.621591);
 
-  LatLng _currentP = LatLng(42.849306, 74.586500);
+  LatLng _currentP = LatLng(42.849306, 75.586500);
 
   Map<PolylineId, Polyline> polylines = {};
 
