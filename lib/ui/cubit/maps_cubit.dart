@@ -25,8 +25,6 @@ class MapsCubit extends Cubit<MapsState> {
 
   LatLng? currentP = null;
 
-
-
   Future<void> cameraToPosition(
     LatLng position,
   ) async {
@@ -63,7 +61,10 @@ class MapsCubit extends Cubit<MapsState> {
           currentLocation.longitude != null) {
         currentP =
             LatLng(currentLocation.latitude!, currentLocation.longitude!);
-        cameraToPosition(currentP!);
+        if(currentP != null){
+          emit(MapsLocation());
+        }
+        //cameraToPosition(currentP!);
       }
     });
   }
@@ -114,7 +115,7 @@ class MapsCubit extends Cubit<MapsState> {
     emit(MapsInitial(polylines: Map.of(polylines)));
   }
 
-  Set<Marker> getMarkers(BuildContext context,MapsCubit cubit) {
+  Set<Marker> getMarkers(BuildContext context) {
     return {
       Marker(
         markerId: MarkerId("_destinationLocation"),
@@ -132,6 +133,11 @@ class MapsCubit extends Cubit<MapsState> {
       ),
     };
   }
+
+  List<String> getMarkersNameMock() {
+    return ["Park1", "Park2", "Park3", "Park4", "Park5"];
+  }
+
 
   void _showNavigationSheet(LatLng destination,BuildContext context) {
     showModalBottomSheet(
