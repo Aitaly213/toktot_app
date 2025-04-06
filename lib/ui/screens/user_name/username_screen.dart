@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:toktot_app/navigation/routs/routs.dart';
 import 'package:toktot_app/theme/app_colors.dart';
 
@@ -52,9 +53,14 @@ class _UsernameScreenState extends State<UsernameScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 40),
-                const Text(
+                Text(
                   'Введите ваше имя',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: GoogleFonts.comfortaa(
+                    textStyle: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 35),
                 SvgPicture.asset(
@@ -67,6 +73,7 @@ class _UsernameScreenState extends State<UsernameScreen> {
                   controller: usernameController,
                   decoration: InputDecoration(
                     hintText: 'Ваше имя',
+                    hintStyle: GoogleFonts.comfortaa(),
                     filled: true,
                     fillColor: const Color(0xFFF1F1F1),
                     border: OutlineInputBorder(
@@ -88,6 +95,7 @@ class _UsernameScreenState extends State<UsernameScreen> {
                     ),
                     errorText: errorText,
                   ),
+                  style: GoogleFonts.comfortaa(),
                   textInputAction: TextInputAction.done,
                   onSubmitted: (_) => _validateAndProceed(),
                 ),
@@ -101,12 +109,22 @@ class _UsernameScreenState extends State<UsernameScreen> {
                         ? AppColors.bluePrimary
                         : Colors.grey,
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    textStyle: GoogleFonts.comfortaa(
+                      textStyle: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     minimumSize: const Size(double.infinity, 48),
                   ),
-                  child: const Text('Далее', style: TextStyle(color: Colors.white)),
+                  child: Text(
+                    'Далее',
+                    style: GoogleFonts.comfortaa(
+                      textStyle: const TextStyle(color: Colors.white),
+                    ),
+                  ),
                 ),
-                const SizedBox(height: 30), // отступ снизу
+                const SizedBox(height: 30),
               ],
             ),
           ),

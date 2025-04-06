@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:toktot_app/navigation/routs/routs.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -11,7 +12,6 @@ import 'registration_state.dart';
 import '../../../theme/app_colors.dart';
 import '../../../utils/PhoneInputFormatter.dart';
 
-/// Screen for user registration.
 class RegistrationScreen extends StatelessWidget {
   const RegistrationScreen({super.key});
 
@@ -44,10 +44,14 @@ class RegistrationScreen extends StatelessWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Text(
+                              Text(
                                 'Пропустить',
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 12),
+                                style: GoogleFonts.comfortaa(
+                                  textStyle: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 12,
+                                  ),
+                                ),
                               ),
                               const SizedBox(width: 10),
                               SvgPicture.asset('assets/icons/skip.svg'),
@@ -56,21 +60,25 @@ class RegistrationScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 40),
-                      const Text(
+                      Text(
                         'Авторизация',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                        style: GoogleFonts.comfortaa(
+                          textStyle: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 10),
-                      const Text(
+                      Text(
                         'Введите номер телефона, чтобы \nвойти или зарегистрироваться',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: AppColors.textGrey,
+                        style: GoogleFonts.comfortaa(
+                          textStyle: const TextStyle(
+                            fontSize: 16,
+                            color: AppColors.textGrey,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 23),
@@ -82,11 +90,13 @@ class RegistrationScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      const Text(
+                      Text(
                         'Номер телефона',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
+                        style: GoogleFonts.comfortaa(
+                          textStyle: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -107,7 +117,7 @@ class RegistrationScreen extends StatelessWidget {
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                               color: Colors.transparent,
                               width: 1,
                             ),
@@ -122,9 +132,11 @@ class RegistrationScreen extends StatelessWidget {
                             ),
                           ),
                           prefixText: '+996 ',
-                          prefixStyle: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 15,
+                          prefixStyle: GoogleFonts.comfortaa(
+                            textStyle: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 15,
+                            ),
                           ),
                           errorText: state is RegistrationPhoneError
                               ? (state as RegistrationPhoneError).phoneError
@@ -153,27 +165,31 @@ class RegistrationScreen extends StatelessWidget {
                           Expanded(
                             child: RichText(
                               text: TextSpan(
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black,
+                                style: GoogleFonts.comfortaa(
+                                  textStyle: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black,
+                                  ),
                                 ),
                                 children: [
-                                  const TextSpan(
-                                      text: "Я прочитал(а) и принимаю "),
+                                  const TextSpan(text: "Я прочитал(а) и принимаю "),
                                   TextSpan(
                                     text: "политику конфиденциальности",
-                                    style: const TextStyle(
-                                      color: AppColors.bluePrimary,
-                                      decoration: TextDecoration.underline,
+                                    style: GoogleFonts.comfortaa(
+                                      textStyle: const TextStyle(
+                                        color: AppColors.bluePrimary,
+                                        decoration: TextDecoration.underline,
+                                      ),
                                     ),
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () async {
                                         final Uri url = Uri.parse(
                                             "https://www.youtube.com/watch?v=X1oxb8GiFdI");
                                         if (await canLaunchUrl(url)) {
-                                          await launchUrl(url,
-                                              mode: LaunchMode
-                                                  .externalApplication);
+                                          await launchUrl(
+                                            url,
+                                            mode: LaunchMode.externalApplication,
+                                          );
                                         } else {
                                           throw "Не удалось открыть $url";
                                         }
@@ -191,31 +207,39 @@ class RegistrationScreen extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             (state as RegistrationTermsError).termsError,
-                            style: const TextStyle(
-                                color: Colors.red, fontSize: 12),
+                            style: GoogleFonts.comfortaa(
+                              textStyle: const TextStyle(
+                                color: Colors.red,
+                                fontSize: 12,
+                              ),
+                            ),
                           ),
                         ),
                       const SizedBox(height: 15),
                       ElevatedButton(
                         onPressed: state is RegistrationValid
                             ? () {
-                                cubit.validateAndSubmit(context);
-                                cubit.sendOtpCode();
-                              }
+                          cubit.validateAndSubmit(context);
+                          cubit.sendOtpCode();
+                        }
                             : null,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: state is RegistrationValid
                               ? AppColors.bluePrimary
                               : AppColors.disableGrey,
                           padding: const EdgeInsets.symmetric(vertical: 16),
-                          textStyle: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                          textStyle: GoogleFonts.comfortaa(
+                            textStyle: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                        child: const Text(
+                        child: Text(
                           'Получить код SMS',
-                          style: TextStyle(color: Colors.white),
+                          style: GoogleFonts.comfortaa(
+                            textStyle: const TextStyle(color: Colors.white),
+                          ),
                         ),
                       ),
                     ],

@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:toktot_app/navigation/routs/routs.dart';
 import 'package:toktot_app/theme/app_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'consent_cubit.dart';
 import 'package:flutter/gestures.dart';
 
@@ -24,24 +25,28 @@ class ConsentScreen extends StatelessWidget {
               children: [
                 const SizedBox(height: 70),
                 Text(
-                  'Подтверждение данных', // Title of the app bar
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                  'Подтверждение данных',
+                  style: GoogleFonts.comfortaa(
+                    textStyle: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
                 SvgPicture.asset(
-                  'assets/images/placeholder.svg', // Ensure this file exists
+                  'assets/images/placeholder.svg',
                   width: 323,
                   height: 240,
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  'Переходя дальше, вы даете согласие на обработку данных', // Title of the app bar
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: AppColors.textGrey,
+                  'Переходя дальше, вы даете согласие на обработку данных',
+                  style: GoogleFonts.comfortaa(
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      color: AppColors.textGrey,
+                    ),
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -55,9 +60,7 @@ class ConsentScreen extends StatelessWidget {
                             Checkbox(
                               value: state,
                               onChanged: (value) {
-                                context
-                                    .read<ConsentCubit>()
-                                    .toggleConsent(value ?? false); // Toggle consent state
+                                context.read<ConsentCubit>().toggleConsent(value ?? false);
                               },
                               activeColor: AppColors.bluePrimary,
                             ),
@@ -65,26 +68,31 @@ class ConsentScreen extends StatelessWidget {
                               child: RichText(
                                 text: TextSpan(
                                   text: 'Я согласен(а) на ',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.black,
+                                  style: GoogleFonts.comfortaa(
+                                    textStyle: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                   children: <TextSpan>[
                                     TextSpan(
                                       text: 'обработку данных',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: AppColors.bluePrimary,
-                                        decoration: TextDecoration.underline,
+                                      style: GoogleFonts.comfortaa(
+                                        textStyle: const TextStyle(
+                                          fontSize: 12,
+                                          color: AppColors.bluePrimary,
+                                          decoration: TextDecoration.underline,
+                                        ),
                                       ),
                                       recognizer: TapGestureRecognizer()
                                         ..onTap = () async {
                                           final Uri url = Uri.parse(
                                               "https://www.youtube.com/watch?v=X1oxb8GiFdI");
                                           if (await canLaunchUrl(url)) {
-                                            await launchUrl(url,
-                                                mode: LaunchMode
-                                                    .externalApplication);
+                                            await launchUrl(
+                                              url,
+                                              mode: LaunchMode.externalApplication,
+                                            );
                                           } else {
                                             throw "Не удалось открыть $url";
                                           }
@@ -92,9 +100,11 @@ class ConsentScreen extends StatelessWidget {
                                     ),
                                     TextSpan(
                                       text: ' моего автомобиля',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.black,
+                                      style: GoogleFonts.comfortaa(
+                                        textStyle: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.black,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -107,21 +117,25 @@ class ConsentScreen extends StatelessWidget {
                         ElevatedButton(
                           onPressed: state
                               ? () {
-                            Navigator.pushNamed(context, Routs.photo); // Navigate to home screen
+                            Navigator.pushNamed(context, Routs.photo);
                           }
-                              : null, // Disable button if state is false
+                              : null,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: state
-                                ? AppColors.bluePrimary
-                                : Color(0xFF676576),
-                            padding: EdgeInsets.symmetric(vertical: 16),
-                            textStyle: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                            minimumSize: Size(double.infinity, 48),
+                            backgroundColor: state ? AppColors.bluePrimary : const Color(0xFF676576),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            textStyle: GoogleFonts.comfortaa(
+                              textStyle: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            minimumSize: const Size(double.infinity, 48),
                           ),
                           child: Text(
                             'Далее',
-                            style: TextStyle(color: Colors.white),
+                            style: GoogleFonts.comfortaa(
+                              textStyle: const TextStyle(color: Colors.white),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -131,19 +145,25 @@ class ConsentScreen extends StatelessWidget {
                               context,
                               Routs.registration,
                                   (Route<dynamic> route) => false,
-                            ); // Navigate to registration screen and remove all previous routes
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 16),
-                            textStyle: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                            minimumSize: Size(double.infinity, 48),
-                            side: BorderSide(color: Colors.black38),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            textStyle: GoogleFonts.comfortaa(
+                              textStyle: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            minimumSize: const Size(double.infinity, 48),
+                            side: const BorderSide(color: Colors.black38),
                           ),
                           child: Text(
                             'Назад',
-                            style: TextStyle(color: Colors.black),
+                            style: GoogleFonts.comfortaa(
+                              textStyle: const TextStyle(color: Colors.black),
+                            ),
                           ),
                         ),
                       ],

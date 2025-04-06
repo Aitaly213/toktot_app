@@ -20,7 +20,7 @@ class RegistrationCubit extends Cubit<RegistrationState> {
   void setAcceptTerms(bool accept) {
     acceptTerms = accept;
     if (!accept) {
-      emit(RegistrationTermsError('Необходимо принять политику конфиденциальности'));
+      emit(RegistrationTermsError('Вы не приняли политику конфиденциальности.'));
     } else {
       emit(RegistrationInitial());
       validate();
@@ -32,7 +32,7 @@ class RegistrationCubit extends Cubit<RegistrationState> {
         ? 'Заполните поле. (9 цифр)'
         : null;
     final termsError = !acceptTerms
-        ? 'Необходимо принять политику конфиденциальности'
+        ? 'Вы не приняли политику конфиденциальности.'
         : null;
 
     if (phoneError == null && termsError == null) {

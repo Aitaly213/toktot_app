@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../navigation/routs/routs.dart';
 
 /// Screen for displaying the splash screen.
@@ -27,14 +28,15 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF246BFD),
-      // Background color of the splash screen
       body: Center(
-        child: const Text(
-          'Toktot', // Application name
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 48,
-            fontWeight: FontWeight.bold,
+        child: Text(
+          'Toktot',
+          style: GoogleFonts.comfortaa(
+            textStyle: const TextStyle(
+              color: Colors.white,
+              fontSize: 48,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),

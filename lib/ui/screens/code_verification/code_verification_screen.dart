@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../theme/app_colors.dart';
 import 'code_verification_cubit.dart';
 
-/// The screen for the code verification process.
 class CodeVerificationScreen extends StatefulWidget {
   final String phoneNumber;
 
@@ -55,14 +55,24 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: 140),
-                  const Text(
+                  Text(
                     'Верификация кода',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    style: GoogleFonts.comfortaa(
+                      textStyle: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Text(
                     'На номер +996 ${widget.phoneNumber} был отправлен SMS-код, введите его.',
-                    style: const TextStyle(fontSize: 16, color: AppColors.textGrey),
+                    style: GoogleFonts.comfortaa(
+                      textStyle: const TextStyle(
+                        fontSize: 16,
+                        color: AppColors.textGrey,
+                      ),
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   SvgPicture.asset(
@@ -94,7 +104,12 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
                                   alignment: Alignment.centerLeft,
                                   child: Text(
                                     state.errorMessage,
-                                    style: const TextStyle(color: Colors.red, fontSize: 12),
+                                    style: GoogleFonts.comfortaa(
+                                      textStyle: const TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 12,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -106,13 +121,20 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
                   const SizedBox(height: 20),
                   RichText(
                     text: TextSpan(
-                      style: const TextStyle(fontSize: 16, color: Colors.black),
+                      style: GoogleFonts.comfortaa(
+                        textStyle: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
                       children: [
                         TextSpan(
                           text: 'Изменить',
-                          style: const TextStyle(
-                            color: AppColors.bluePrimary,
-                            decoration: TextDecoration.underline,
+                          style: GoogleFonts.comfortaa(
+                            textStyle: const TextStyle(
+                              color: AppColors.bluePrimary,
+                              decoration: TextDecoration.underline,
+                            ),
                           ),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
@@ -134,7 +156,12 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
                             : null,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.bluePrimary,
-                          textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          textStyle: GoogleFonts.comfortaa(
+                            textStyle: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           minimumSize: const Size(double.infinity, 48),
                         ),
                         child: Text(
@@ -143,12 +170,16 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
                               : state.isButtonEnabled
                               ? 'Запросить код заново'
                               : 'Запросить код - через ${state.timer} сек.',
-                          style: const TextStyle(color: Colors.white),
+                          style: GoogleFonts.comfortaa(
+                            textStyle: const TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       );
                     },
                   ),
-                  const SizedBox(height: 20), // Чтобы внизу не обрезалось
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
@@ -158,7 +189,6 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
     );
   }
 
-  /// Builds a single digit input box with auto-scroll on focus.
   Widget _buildCodeInputBox(BuildContext context, CodeVerificationCubit cubit,
       CodeVerificationState state, int index) {
     return SizedBox(
@@ -192,7 +222,9 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
           contentPadding: const EdgeInsets.all(8),
         ),
         textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 24),
+        style: GoogleFonts.comfortaa(
+          textStyle: const TextStyle(fontSize: 24),
+        ),
         keyboardType: TextInputType.number,
         inputFormatters: [
           FilteringTextInputFormatter.digitsOnly,
