@@ -6,5 +6,7 @@ class Routs {
   static const String codeVerification = '/code-verification';
   static const String home = '/home';
   static const String userName = '/enter-username';
-  static const String photo = '/Photo';
+  static const String photo = '/photo';
+  static const String history = '/history';
+  static const String profile = '/profile';
 }
