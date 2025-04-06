@@ -8,16 +8,16 @@ import 'package:toktot_app/ui/screens/user_name/username_screen.dart';
 import 'navigation/routs/routs.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const Navigation());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Navigation extends StatelessWidget {
+  const Navigation({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Tokto',
+      title: 'Toktot',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -45,7 +45,8 @@ class MyApp extends StatelessWidget {
       },
       Routs.userName: (_) => UsernameScreen(),
       Routs.home: (_) => const HomeScreen(),
-      Routs.home: (_) => const HomeScreen(),
+     // Routs.history: (_) => const HistoryScreen(),
+      //Routs.profile: (_) => const ProfileScreen(),
     };
   }
 }
