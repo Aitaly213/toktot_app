@@ -1,51 +1,35 @@
-part of 'registration_cubit.dart';
+import 'package:equatable/equatable.dart';
 
-/// The state for the RegistrationCubit, contains the data for the registration process.
-class RegistrationState extends Equatable {
-  final TextEditingController
-      usernameController; // Controller for username input field
-  final TextEditingController
-      phoneController; // Controller for phone input field
-  final bool acceptTerms; // State for terms acceptance
-  final String? usernameError; // Error message for username validation
-  final String? phoneError; // Error message for phone validation
-  final String? termsError; // Error message for terms acceptance validation
-
-  RegistrationState({
-    required this.usernameController,
-    required this.phoneController,
-    required this.acceptTerms,
-    this.usernameError,
-    this.phoneError,
-    this.termsError,
-  });
-
-  /// Creates a copy of the current state with the given fields replaced by new values.
-  RegistrationState copyWith({
-    TextEditingController? usernameController,
-    TextEditingController? phoneController,
-    bool? acceptTerms,
-    String? usernameError,
-    String? phoneError,
-    String? termsError,
-  }) {
-    return RegistrationState(
-      usernameController: usernameController ?? this.usernameController,
-      phoneController: phoneController ?? this.phoneController,
-      acceptTerms: acceptTerms ?? this.acceptTerms,
-      usernameError: usernameError,
-      phoneError: phoneError,
-      termsError: termsError,
-    );
-  }
+// Base state class
+abstract class RegistrationState extends Equatable {
+  const RegistrationState();
 
   @override
-  List<Object?> get props => [
-        usernameController,
-        phoneController,
-        acceptTerms,
-        usernameError,
-        phoneError,
-        termsError,
-      ];
+  List<Object?> get props => [];
 }
+
+// Initial state
+class RegistrationInitial extends RegistrationState {}
+
+// State with phone number error
+class RegistrationPhoneError extends RegistrationState {
+  final String phoneError;
+
+  const RegistrationPhoneError(this.phoneError);
+
+  @override
+  List<Object?> get props => [phoneError];
+}
+
+// State with terms error
+class RegistrationTermsError extends RegistrationState {
+  final String termsError;
+
+  const RegistrationTermsError(this.termsError);
+
+  @override
+  List<Object?> get props => [termsError];
+}
+
+// State when registration is valid
+class RegistrationValid extends RegistrationState {}

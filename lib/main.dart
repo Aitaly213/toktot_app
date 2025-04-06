@@ -1,35 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:toktot_app/ui/screens/code_verification/code_verification_screen.dart';
+import 'package:toktot_app/ui/screens/consent/consent_screen.dart';
 import 'package:toktot_app/ui/screens/home/home_screen.dart';
-import 'package:toktot_app/ui/screens/onboard/onboarding_screen.dart';
-import 'package:toktot_app/ui/screens/registration/code_verification/code_verification_screen.dart';
-import 'package:toktot_app/ui/screens/registration/consent/consent_screen.dart';
 import 'package:toktot_app/ui/screens/registration/registration_screen.dart';
 import 'package:toktot_app/ui/screens/splash/splash_screen.dart';
+import 'package:toktot_app/ui/screens/user_name/username_screen.dart';
+import 'navigation/routs/routs.dart';
 
 void main() {
-  runApp(const Navigation());
+  runApp(const MyApp());
 }
 
-/// The main widget for the navigation system of the app.
-class Navigation extends StatelessWidget {
-  const Navigation({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Tokto', // The title of the application
+      title: 'Tokto',
       theme: ThemeData(
-        primarySwatch: Colors.blue, // The primary color theme
+        primarySwatch: Colors.blue,
       ),
-      initialRoute: '/', // The initial route of the app
-      routes: {
-        '/': (context) => const SplashScreen(), // Route for the SplashScreen
-        '/onboarding': (context) => const OnboardingScreen(), // Route for the OnboardingScreen
-        '/consent': (context) => const ConsentScreen(), // Route for the ConsentScreen
-        '/registration': (context) => const RegistrationScreen(), // Route for the RegistrationScreen
-        '/code-verification': (context) => const CodeVerificationScreen(), // Route for the CodeVerificationScreen
-        '/home': (context) => const HomeScreen(), // Route for the HomeScreen
+      initialRoute: Routs.splash,
+      onGenerateRoute: (settings) {
+        final routeBuilder = _routeBuilders[settings.name];
+        if (routeBuilder != null) {
+          return MaterialPageRoute(
+            builder: (_) => routeBuilder(settings.arguments),
+          );
+        }
+        return null; // Return null for unknown routes
       },
     );
+  }
+
+  Map<String, Widget Function(Object?)> get _routeBuilders {
+    return {
+      Routs.splash: (_) => const SplashScreen(),
+      Routs.registration: (_) => const RegistrationScreen(),
+      Routs.consent: (_) => const ConsentScreen(),
+      Routs.codeVerification: (args) {
+        final phoneNumber = args as String;
+        return CodeVerificationScreen(phoneNumber: phoneNumber);
+      },
+      Routs.userName: (_) => UsernameScreen(),
+      Routs.home: (_) => const HomeScreen(),
+      Routs.home: (_) => const HomeScreen(),
+    };
   }
 }
