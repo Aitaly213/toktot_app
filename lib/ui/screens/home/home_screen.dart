@@ -1,11 +1,15 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:toktot_app/themes/app_colors.dart';
+import 'package:toktot_app/ui/widgets/bottom_nav.dart';
+import 'package:toktot_app/ui/widgets/free_park_item.dart';
 
-const String GOOGLE_API_KEY = "AIzaSyByuplGDm9Wfby4EFaz25BbTNbgrfDyRjg";
+import '../../cubit/maps_cubit.dart';
+import '../../widgets/filter_bottom_sheet.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,191 +21,263 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   Location _locationController = Location();
 
-  final Completer<GoogleMapController> _mapController =
-      Completer<GoogleMapController>();
-
   static const _kGooglePlex = CameraPosition(
     target: LatLng(42.875639, 74.603806),
     zoom: 13,
   );
 
-  static const _posDestination = LatLng(42.828061, 74.601591);
-  static const _posOrigin = LatLng(42.808061, 74.621591);
-
-  LatLng _currentP = LatLng(42.849306, 75.586500);
-
-  Map<PolylineId, Polyline> polylines = {};
-
-  @override
-  void initState() {
-    super.initState();
-    getLocationUpdates();
-  }
+  List<String> bestParks = ["Park 1", "Park 2"];
 
   @override
   Widget build(BuildContext context) {
+    final args =
+    ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    int selectedIndex = args?['selectedIndex'] ?? 1;
+
+    final cubit = MapsCubit()..getLocationUpdates(_locationController);
+
     return SafeArea(
       child: Scaffold(
-        body: Stack(
-          children: [
-            GoogleMap(
-              onMapCreated: (GoogleMapController controller) =>
-                  _mapController.complete(controller),
-              initialCameraPosition: _kGooglePlex,
-              myLocationEnabled: true,
-              myLocationButtonEnabled: false,
-              // Disable default button
-              mapToolbarEnabled: false,
-              zoomControlsEnabled: false,
-              markers: _getMarkers(),
-              polylines: Set<Polyline>.of(polylines.values),
+        bottomNavigationBar: BottomNavigation(
+          selectedIndex: selectedIndex,
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 30, top: 60, bottom: 10),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text("Балланс",
+                        style: GoogleFonts.comfortaa(
+                            textStyle: TextStyle(
+                              color: AppColors.blueGeraint,
+                              fontSize: 14,
+                            ))),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 30, bottom: 30),
+                  child: Row(
+                    children: [
+                      Text(
+                        "450,30 сом",
+                        style: GoogleFonts.comfortaa(
+                          textStyle: TextStyle(
+                              color: Colors.black,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Spacer(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30),
+                        child: SizedBox(
+                          height: 34,
+                          width: 34,
+                          child: FloatingActionButton(
+                            elevation: 0,
+                            backgroundColor: AppColors.blue,
+                            onPressed: () {},
+                            shape: CircleBorder(),
+                            child: Icon(Icons.add, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          height: 34,
+                          child: SearchAnchor(builder:
+                              (BuildContext context, SearchController controller) {
+                            return SearchBar(
+                              elevation: WidgetStatePropertyAll(0),
+                              hintText: "Поиск места для парковки",
+                              hintStyle:
+                              WidgetStateProperty.all(GoogleFonts.comfortaa(
+                                  textStyle: TextStyle(
+                                    color: AppColors.blueGray,
+                                    fontSize: 10,
+                                  ))),
+                              controller: controller,
+                              padding: const WidgetStatePropertyAll<EdgeInsets>(
+                                  EdgeInsets.symmetric(horizontal: 10)),
+                              shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              )),
+                              onTap: () {
+                                controller.openView();
+                              },
+                              onChanged: (_) {
+                                controller.openView();
+                              },
+                              leading: const Icon(
+                                size: 14,
+                                Icons.search,
+                                color: AppColors.blue,
+                              ),
+                            );
+                          }, suggestionsBuilder:
+                              (BuildContext context, SearchController controller) {
+                            List<String> items = cubit.getMarkersNameMock();
+
+                            return List<ListTile>.generate(5, (int index) {
+                              final String item = items[index];
+                              return ListTile(
+                                title: Text(item),
+                                onTap: () {
+                                  setState(() {
+                                    controller.closeView(item);
+                                  });
+                                },
+                              );
+                            });
+                          }),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      SizedBox(
+                        width: 34,
+                        height: 34,
+                        child: FloatingActionButton(
+                            elevation: 0,
+                            backgroundColor: AppColors.blue,
+                            onPressed: () {
+                              showModalBottomSheet(
+                                isScrollControlled: true,
+
+                                context: context,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(30)),
+                                ),
+                                builder: (context) =>  Container(
+                                    height: MediaQuery.of(context).size.height * 0.8,
+                                    child: FilterBottomSheet()),
+                              );
+                            },
+                            shape: CircleBorder(),
+                            child: SvgPicture.asset(
+                              'assets/images/ic_filter.svg',
+                            )),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(30),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    clipBehavior: Clip.hardEdge,
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: BlocBuilder(
+                                bloc: cubit,
+                                builder: (context, state) {
+                                  Map<PolylineId, Polyline> polylines = {};
+
+                                  if (state is MapsInitial) {
+                                    polylines = state.polylines;
+                                  }
+
+                                  return GoogleMap(
+                                    onMapCreated:
+                                        (GoogleMapController controller) => cubit
+                                        .mapController
+                                        .complete(controller),
+                                    initialCameraPosition: _kGooglePlex,
+                                    myLocationEnabled: true,
+                                    myLocationButtonEnabled: false,
+                                    // Disable default button
+                                    mapToolbarEnabled: false,
+                                    zoomControlsEnabled: false,
+                                    markers: cubit.getMarkers(context),
+                                    polylines: Set<Polyline>.of(polylines.values),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 110,
+                            right: 10,
+                            child: SizedBox(
+                              width: 44,
+                              height: 44,
+                              child: FloatingActionButton(
+                                backgroundColor: Colors.white,
+                                onPressed: () {
+                                  cubit.cameraToPosition(cubit.currentP);
+                                },
+                                shape: CircleBorder(),
+                                child: SvgPicture.asset(
+                                  'assets/images/ic_current_location.svg',
+                                  colorFilter: ColorFilter.mode(
+                                      Colors.black, BlendMode.srcIn),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 10,
+                            left: 10,
+                            right: 10,
+                            child: ElevatedButton.icon(
+                              icon: Icon(Icons.flag_outlined, color: Colors.white),
+                              iconAlignment: IconAlignment.start,
+                              onPressed: () {},
+                              label: Text("Найти ближайшую парковку",
+                                  style: GoogleFonts.comfortaa(
+                                      textStyle: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 13,
+                                      ))),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.blue,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 120,
+                  child: ListView.separated(
+                    separatorBuilder: (context, index) => const Divider(),
+                    itemBuilder: (context, index) {
+                      final responseData = bestParks[index];
+                      return Column(
+                        children: [FreeParkItem(title: responseData)],
+                      );
+                    },
+                    itemCount: bestParks.length,
+                  ),
+                ),
+              ],
             ),
-            Positioned(
-              bottom: 20,
-              right: 20,
-              child: FloatingActionButton(
-                backgroundColor: Colors.white,
-                onPressed: () {
-                  _cameraToPosition(_currentP);
-                },
-                child: Icon(Icons.my_location, color: Colors.blue),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
-  }
-
-  Set<Marker> _getMarkers() {
-    return {
-      Marker(
-        markerId: MarkerId("_destinationLocation"),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-        position: _posDestination,
-        infoWindow: InfoWindow(title: "Destination"),
-        onTap: () => _showNavigationSheet(_posDestination),
-      ),
-      Marker(
-        markerId: MarkerId("_originLocation"),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-        position: _posOrigin,
-        infoWindow: InfoWindow(title: "Origin"),
-        onTap: () => _showNavigationSheet(_posOrigin),
-      ),
-    };
-  }
-
-  void _showNavigationSheet(LatLng destination) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              "Navigate to Destination",
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the sheet
-                _startNavigation(destination);
-              },
-              child: const Text("Navigate"),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _startNavigation(LatLng destination) async {
-    List<LatLng> coordinates =
-        await getPolylinePointsBetween(_currentP, destination);
-    generatePolylineFromPoints(coordinates);
-  }
-
-  Future<void> _cameraToPosition(LatLng position) async {
-    final GoogleMapController controller = await _mapController.future;
-    CameraPosition _newCameraPosition =
-        CameraPosition(target: position, zoom: 15);
-    await controller.animateCamera(
-      CameraUpdate.newCameraPosition(_newCameraPosition),
-    );
-  }
-
-  Future<void> getLocationUpdates() async {
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
-
-    _serviceEnabled = await _locationController.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await _locationController.requestService();
-      if (!_serviceEnabled) {
-        return;
-      }
-    }
-
-    _permissionGranted = await _locationController.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await _locationController.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        return;
-      }
-    }
-
-    _locationController.onLocationChanged
-        .listen((LocationData currentLocation) {
-      if (currentLocation.latitude != null &&
-          currentLocation.longitude != null) {
-        setState(() {
-          _currentP =
-              LatLng(currentLocation.latitude!, currentLocation.longitude!);
-          //_cameraToPosition(_currentP);
-        });
-      }
-    });
-  }
-
-  Future<List<LatLng>> getPolylinePoints() async {
-    return await getPolylinePointsBetween(_currentP, _posDestination);
-  }
-
-  Future<List<LatLng>> getPolylinePointsBetween(
-      LatLng origin, LatLng destination) async {
-    List<LatLng> polylineCoordinates = [];
-    PolylinePoints polylinePoints = PolylinePoints();
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      googleApiKey: GOOGLE_API_KEY,
-      request: PolylineRequest(
-        origin: PointLatLng(origin.latitude, origin.longitude),
-        destination: PointLatLng(destination.latitude, destination.longitude),
-        mode: TravelMode.driving,
-      ),
-    );
-    if (result.points.isNotEmpty) {
-      for (var point in result.points) {
-        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      }
-    } else {
-      print("Error: ${result.errorMessage}");
-    }
-    return polylineCoordinates;
-  }
-
-  void generatePolylineFromPoints(List<LatLng> polylineCoordinates) {
-    PolylineId id = const PolylineId("poly");
-    Polyline polyline = Polyline(
-      polylineId: id,
-      color: Colors.blue,
-      points: polylineCoordinates,
-      width: 5,
-    );
-    setState(() {
-      polylines[id] = polyline;
-    });
   }
 }

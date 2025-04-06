@@ -11,6 +11,7 @@ void main() {
   runApp(const Navigation());
 }
 
+/// The main widget for the navigation system of the app.
 class Navigation extends StatelessWidget {
   const Navigation({super.key});
 
