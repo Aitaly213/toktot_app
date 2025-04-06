@@ -7,9 +7,15 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final args =
+    ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    int selectedIndex = args?['selectedIndex'] ?? 1;
+
+
+
     return SafeArea(
       child: Scaffold(
-          bottomNavigationBar: BottomNavigation(),
+          bottomNavigationBar: BottomNavigation(selectedIndex: selectedIndex,),
           body: Center(
             child: Text('Profile Screen'),
           )),

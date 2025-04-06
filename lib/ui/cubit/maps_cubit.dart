@@ -23,7 +23,8 @@ class MapsCubit extends Cubit<MapsState> {
   static const _posDestination = LatLng(42.828061, 74.601591);
   static const _posOrigin = LatLng(42.808061, 74.621591);
 
-  LatLng? currentP = null;
+ // bool isLocated = false;
+  LatLng currentP = LatLng(42.828061, 74.991591);
 
   Future<void> cameraToPosition(
     LatLng position,
@@ -61,9 +62,9 @@ class MapsCubit extends Cubit<MapsState> {
           currentLocation.longitude != null) {
         currentP =
             LatLng(currentLocation.latitude!, currentLocation.longitude!);
-        if(currentP != null){
-          emit(MapsLocation());
-        }
+        // if(currentP != null){
+        //   isLocated = true;
+        // }
         //cameraToPosition(currentP!);
       }
     });

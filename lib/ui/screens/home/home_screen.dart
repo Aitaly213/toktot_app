@@ -9,6 +9,7 @@ import 'package:toktot_app/ui/widgets/bottom_nav.dart';
 import 'package:toktot_app/ui/widgets/free_park_item.dart';
 
 import '../../cubit/maps_cubit.dart';
+import '../../widgets/filter_bottom_sheet.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,263 +26,256 @@ class _HomeScreenState extends State<HomeScreen> {
     zoom: 13,
   );
 
-  List<String> bestParks = ["Park 1","Park 2"];
-
+  List<String> bestParks = ["Park 1", "Park 2"];
 
   @override
   Widget build(BuildContext context) {
+    final args =
+    ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    int selectedIndex = args?['selectedIndex'] ?? 1;
+
     final cubit = MapsCubit()..getLocationUpdates(_locationController);
 
     return SafeArea(
       child: Scaffold(
-        bottomNavigationBar: BottomNavigation(),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 30, top: 60, bottom: 10),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Text("Балланс",
-                    style: GoogleFonts.comfortaa(
-                        textStyle: TextStyle(
-                      color: AppColors.blueGeraint,
-                      fontSize: 14,
-                    ))),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 30, bottom: 10),
-              child: Row(
-                children: [
-                  Text(
-                    "450,30 сом",
-                    style: GoogleFonts.comfortaa(
-                      textStyle: TextStyle(
-                          color: Colors.black,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold),
-                    ),
+        bottomNavigationBar: BottomNavigation(
+          selectedIndex: selectedIndex,
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 30, top: 60, bottom: 10),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text("Балланс",
+                        style: GoogleFonts.comfortaa(
+                            textStyle: TextStyle(
+                              color: AppColors.blueGeraint,
+                              fontSize: 14,
+                            ))),
                   ),
-                  Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: SizedBox(
-                      height: 34,
-                      width: 34,
-
-                      child: FloatingActionButton(
-                        backgroundColor: AppColors.blue,
-                        onPressed: () {
-                          cubit.cameraToPosition(cubit.currentP!);
-                        },
-                        shape: CircleBorder(),
-                        child: Icon(Icons.add, color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                clipBehavior: Clip.hardEdge,
-                child: Container(
-                  padding: EdgeInsets.all(30),
-                  child: Stack(
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 30, bottom: 30),
+                  child: Row(
                     children: [
-                      Positioned.fill(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: BlocBuilder(
-                            bloc: cubit,
-                            builder: (context, state) {
-                              Map<PolylineId, Polyline> polylines = {};
+                      Text(
+                        "450,30 сом",
+                        style: GoogleFonts.comfortaa(
+                          textStyle: TextStyle(
+                              color: Colors.black,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Spacer(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30),
+                        child: SizedBox(
+                          height: 34,
+                          width: 34,
+                          child: FloatingActionButton(
+                            elevation: 0,
+                            backgroundColor: AppColors.blue,
+                            onPressed: () {},
+                            shape: CircleBorder(),
+                            child: Icon(Icons.add, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          height: 34,
+                          child: SearchAnchor(builder:
+                              (BuildContext context, SearchController controller) {
+                            return SearchBar(
+                              elevation: WidgetStatePropertyAll(0),
+                              hintText: "Поиск места для парковки",
+                              hintStyle:
+                              WidgetStateProperty.all(GoogleFonts.comfortaa(
+                                  textStyle: TextStyle(
+                                    color: AppColors.blueGray,
+                                    fontSize: 10,
+                                  ))),
+                              controller: controller,
+                              padding: const WidgetStatePropertyAll<EdgeInsets>(
+                                  EdgeInsets.symmetric(horizontal: 10)),
+                              shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              )),
+                              onTap: () {
+                                controller.openView();
+                              },
+                              onChanged: (_) {
+                                controller.openView();
+                              },
+                              leading: const Icon(
+                                size: 14,
+                                Icons.search,
+                                color: AppColors.blue,
+                              ),
+                            );
+                          }, suggestionsBuilder:
+                              (BuildContext context, SearchController controller) {
+                            List<String> items = cubit.getMarkersNameMock();
 
-                              if (state is MapsInitial) {
-                                polylines = state.polylines;
-                              }
+                            return List<ListTile>.generate(5, (int index) {
+                              final String item = items[index];
+                              return ListTile(
+                                title: Text(item),
+                                onTap: () {
+                                  setState(() {
+                                    controller.closeView(item);
+                                  });
+                                },
+                              );
+                            });
+                          }),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      SizedBox(
+                        width: 34,
+                        height: 34,
+                        child: FloatingActionButton(
+                            elevation: 0,
+                            backgroundColor: AppColors.blue,
+                            onPressed: () {
+                              showModalBottomSheet(
+                                isScrollControlled: true,
 
-                              bool isLocated = false;
-                              if (state is MapsLocation) {
-                                isLocated = true;
-                              }
-
-                              return Container(
-                                child: GoogleMap(
-                                  onMapCreated:
-                                      (GoogleMapController controller) => cubit
-                                          .mapController
-                                          .complete(controller),
-                                  initialCameraPosition: _kGooglePlex,
-                                  myLocationEnabled: isLocated,
-                                  myLocationButtonEnabled: false,
-                                  // Disable default button
-                                  mapToolbarEnabled: false,
-                                  zoomControlsEnabled: false,
-                                  markers: cubit.getMarkers(context),
-                                  polylines: Set<Polyline>.of(polylines.values),
+                                context: context,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(30)),
                                 ),
+                                builder: (context) =>  Container(
+                                    height: MediaQuery.of(context).size.height * 0.8,
+                                    child: FilterBottomSheet()),
                               );
                             },
-                          ),
-                        ),
+                            shape: CircleBorder(),
+                            child: SvgPicture.asset(
+                              'assets/images/ic_filter.svg',
+                            )),
                       ),
-                      // Positioned(
-                      //   bottom: 90,
-                      //   right: 10,
-                      //   child: FloatingActionButton(
-                      //     backgroundColor: Colors.white,
-                      //     onPressed: () {
-                      //       cubit.cameraToPosition(cubit.currentP!);
-                      //     },
-                      //     shape: CircleBorder(),
-                      //     child: Icon(Icons.my_location_outlined, color: Colors.blue),
-                      //   ),
-                      // ),
-                      Positioned(
-                        bottom: 10,
-                        left: 10,
-                        right: 10,
-                        child: ElevatedButton.icon(
-                          icon: Icon(Icons.flag_outlined, color: Colors.white),
-                          iconAlignment: IconAlignment.start,
-                          onPressed: () {},
-                          label: Text("Найти ближайшую парковку",
-                              style: GoogleFonts.comfortaa(
-                                  textStyle: TextStyle(
-                                color: Colors.white,
-                                fontSize: 13,
-                              ))),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.blue,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(30),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    clipBehavior: Clip.hardEdge,
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: BlocBuilder(
+                                bloc: cubit,
+                                builder: (context, state) {
+                                  Map<PolylineId, Polyline> polylines = {};
+
+                                  if (state is MapsInitial) {
+                                    polylines = state.polylines;
+                                  }
+
+                                  return GoogleMap(
+                                    onMapCreated:
+                                        (GoogleMapController controller) => cubit
+                                        .mapController
+                                        .complete(controller),
+                                    initialCameraPosition: _kGooglePlex,
+                                    myLocationEnabled: true,
+                                    myLocationButtonEnabled: false,
+                                    // Disable default button
+                                    mapToolbarEnabled: false,
+                                    zoomControlsEnabled: false,
+                                    markers: cubit.getMarkers(context),
+                                    polylines: Set<Polyline>.of(polylines.values),
+                                  );
+                                },
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                      Positioned(
-                          top: 10,
-                          left: 10,
-                          right: 10,
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  height: 34,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                          width: 2, color: AppColors.gray)),
-                                  child: SearchAnchor(builder:
-                                      (BuildContext context,
-                                          SearchController controller) {
-                                    return SearchBar(
-                                      hintText: "Поиск места для парковки",
-                                      hintStyle: WidgetStateProperty.all(
-                                          GoogleFonts.comfortaa(
-                                              textStyle: TextStyle(
-                                        color: AppColors.blueGray,
-                                        fontSize: 10,
-                                      ))),
-                                      controller: controller,
-                                      padding: const WidgetStatePropertyAll<
-                                              EdgeInsets>(
-                                          EdgeInsets.symmetric(horizontal: 10)),
-                                      shape: WidgetStatePropertyAll(
-                                          RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                      )),
-                                      onTap: () {
-                                        controller.openView();
-                                      },
-                                      onChanged: (_) {
-                                        controller.openView();
-                                      },
-                                      leading: const Icon(
-                                        Icons.search,
-                                        color: AppColors.blue,
-                                      ),
-                                    );
-                                  }, suggestionsBuilder: (BuildContext context,
-                                      SearchController controller) {
-                                    List<String> items =
-                                        cubit.getMarkersNameMock();
-
-                                    return List<ListTile>.generate(5,
-                                        (int index) {
-                                      final String item = items[index];
-                                      return ListTile(
-                                        title: Text(item),
-                                        onTap: () {
-                                          setState(() {
-                                            controller.closeView(item);
-                                          });
-                                        },
-                                      );
-                                    });
-                                  }),
+                          Positioned(
+                            bottom: 110,
+                            right: 10,
+                            child: SizedBox(
+                              width: 44,
+                              height: 44,
+                              child: FloatingActionButton(
+                                backgroundColor: Colors.white,
+                                onPressed: () {
+                                  cubit.cameraToPosition(cubit.currentP);
+                                },
+                                shape: CircleBorder(),
+                                child: SvgPicture.asset(
+                                  'assets/images/ic_current_location.svg',
+                                  colorFilter: ColorFilter.mode(
+                                      Colors.black, BlendMode.srcIn),
                                 ),
                               ),
-                              SizedBox(
-                                width: 10,
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 10,
+                            left: 10,
+                            right: 10,
+                            child: ElevatedButton.icon(
+                              icon: Icon(Icons.flag_outlined, color: Colors.white),
+                              iconAlignment: IconAlignment.start,
+                              onPressed: () {},
+                              label: Text("Найти ближайшую парковку",
+                                  style: GoogleFonts.comfortaa(
+                                      textStyle: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 13,
+                                      ))),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.blue,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
                               ),
-                              SizedBox(
-                                width: 34,
-                                height: 34,
-                                child: FloatingActionButton(
-                                    backgroundColor: AppColors.blue,
-                                    onPressed: () {
-                                      cubit.cameraToPosition(cubit.currentP!);
-                                    },
-                                    shape: CircleBorder(),
-                                    child: SvgPicture.asset(
-                                      'assets/images/ic_filter.svg',
-                                    )),
-                              ),
-                            ],
-                          ))
-                    ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.all(30),
-              child: Align(
-                alignment: Alignment.bottomLeft,
-                child: Text(
-                  "Сейчас свободно",
-                  style: GoogleFonts.comfortaa(
-                    textStyle: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold),
+                SizedBox(
+                  height: 120,
+                  child: ListView.separated(
+                    separatorBuilder: (context, index) => const Divider(),
+                    itemBuilder: (context, index) {
+                      final responseData = bestParks[index];
+                      return Column(
+                        children: [FreeParkItem(title: responseData)],
+                      );
+                    },
+                    itemCount: bestParks.length,
                   ),
                 ),
-              ),
+              ],
             ),
-
-
-            SizedBox(
-              height: 200,
-              child: ListView.separated(
-                separatorBuilder: (context, index) => const Divider(),
-                itemBuilder: (context, index) {
-                  final responseData = bestParks[index];
-                  return Column(
-                    children: [
-                      FreeParkItem(title: responseData)
-                    ],
-                  );
-                },
-                itemCount: bestParks.length,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
