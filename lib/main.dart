@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:toktot_app/ui/screens/code_verification/code_verification_screen.dart';
 import 'package:toktot_app/ui/screens/consent/consent_screen.dart';
+import 'package:toktot_app/ui/screens/history/history_screen.dart';
 import 'package:toktot_app/ui/screens/home/home_screen.dart';
+import 'package:toktot_app/ui/screens/profile/profile_screen.dart';
 import 'package:toktot_app/ui/screens/registration/registration_screen.dart';
 import 'package:toktot_app/ui/screens/splash/splash_screen.dart';
 import 'package:toktot_app/ui/screens/user_name/username_screen.dart';
@@ -46,8 +48,8 @@ class Navigation extends StatelessWidget {
       },
       Routs.userName: (_) => UsernameScreen(),
       Routs.home: (_) => const HomeScreen(),
-     // Routs.history: (_) => const HistoryScreen(),
-      //Routs.profile: (_) => const ProfileScreen(),
+      Routs.history: (_) => const HistoryScreen(),
+      Routs.profile: (_) => const ProfileScreen(),
     };
   }
 }

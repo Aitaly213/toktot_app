@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:toktot_app/navigation/routs/routs.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'registration_cubit.dart';
@@ -36,7 +37,9 @@ class RegistrationScreen extends StatelessWidget {
                         alignment: Alignment.centerRight,
                         child: TextButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, '/home');
+                            BlocProvider.of<RegistrationCubit>(context).close();
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, Routs.home, (route) => false);
                           },
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -133,8 +136,8 @@ class RegistrationScreen extends StatelessWidget {
                           LengthLimitingTextInputFormatter(9),
                           phoneMaskFormatter,
                         ],
-                        onChanged: (value) =>
-                            cubit.setPhone(phoneMaskFormatter.getUnmaskedText()),
+                        onChanged: (value) => cubit
+                            .setPhone(phoneMaskFormatter.getUnmaskedText()),
                       ),
                       const SizedBox(height: 30),
                       Row(
@@ -196,9 +199,9 @@ class RegistrationScreen extends StatelessWidget {
                       ElevatedButton(
                         onPressed: state is RegistrationValid
                             ? () {
-                          cubit.validateAndSubmit(context);
-                          cubit.sendOtpCode();
-                        }
+                                cubit.validateAndSubmit(context);
+                                cubit.sendOtpCode();
+                              }
                             : null,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: state is RegistrationValid
