@@ -81,7 +81,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: FloatingActionButton(
                             elevation: 0,
                             backgroundColor: AppColors.blue,
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamed(context, "routeName");
+                                  // todo nav balance
+                            },
                             shape: CircleBorder(),
                             child: Icon(Icons.add, color: Colors.white),
                           ),

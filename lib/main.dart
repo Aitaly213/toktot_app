@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:toktot_app/ui/screens/code_verification/code_verification_screen.dart';
 import 'package:toktot_app/ui/screens/consent/consent_screen.dart';
 import 'package:toktot_app/ui/screens/history/history_screen.dart';

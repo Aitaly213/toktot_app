@@ -79,7 +79,7 @@ class PhotoPreviewScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 48),
+
                         if (isSuccess)
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
