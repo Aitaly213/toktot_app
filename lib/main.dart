@@ -1,34 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:toktot_app/ui/screens/code_verification/code_verification_screen.dart';
+import 'package:toktot_app/ui/screens/consent/consent_screen.dart';
+import 'package:toktot_app/ui/screens/history/history_screen.dart';
 import 'package:toktot_app/ui/screens/home/home_screen.dart';
-import 'package:toktot_app/ui/screens/onboard/onboarding_screen.dart';
-import 'package:toktot_app/ui/screens/registration/code_verification/code_verification_screen.dart';
-import 'package:toktot_app/ui/screens/registration/consent/consent_screen.dart';
+import 'package:toktot_app/ui/screens/photo/photo_screen.dart';
+import 'package:toktot_app/ui/screens/profile/profile_screen.dart';
 import 'package:toktot_app/ui/screens/registration/registration_screen.dart';
 import 'package:toktot_app/ui/screens/splash/splash_screen.dart';
+import 'package:toktot_app/navigation/routs/app_routes.dart';
 
-void main() {
+void main() async{
+  await dotenv.load(fileName: ".env");
   runApp(const Navigation());
 }
 
-/// The main widget for the navigation system of the app.
 class Navigation extends StatelessWidget {
   const Navigation({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Tokto', // The title of the application
+      title: 'Toktot',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue, // The primary color theme
+        primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Colors.white,
+        fontFamily: 'Comfortaa',
       ),
-      initialRoute: '/', // The initial route of the app
+      initialRoute: AppRoutes.splash,
       routes: {
-        '/': (context) => const SplashScreen(), // Route for the SplashScreen
-        '/onboarding': (context) => const OnboardingScreen(), // Route for the OnboardingScreen
-        '/consent': (context) => const ConsentScreen(), // Route for the ConsentScreen
-        '/registration': (context) => const RegistrationScreen(), // Route for the RegistrationScreen
-        '/code-verification': (context) => const CodeVerificationScreen(), // Route for the CodeVerificationScreen
-        '/home': (context) => const HomeScreen(), // Route for the HomeScreen
+        AppRoutes.splash: (_) => const SplashScreen(),
+        AppRoutes.registration: (_) => const RegistrationScreen(),
+        AppRoutes.consent: (_) => const ConsentScreen(),
+        AppRoutes.home: (_) => const HomeScreen(),
+        AppRoutes.history: (_) => const HistoryScreen(),
+        AppRoutes.profile: (_) => const ProfileScreen(),
+        AppRoutes.photo: (_) => const PhotoScreen(),
+      },
+      onGenerateRoute: (settings) {
+        if (settings.name == AppRoutes.codeVerification) {
+          final phoneNumber = settings.arguments as String;
+          return MaterialPageRoute(
+            builder: (_) => CodeVerificationScreen(phoneNumber: phoneNumber),
+          );
+        }
+        return null;
       },
     );
   }

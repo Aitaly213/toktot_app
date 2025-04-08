@@ -1,31 +1,57 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'splash_cubit.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../../navigation/routs/app_routes.dart';
 
-/// Screen for displaying the splash screen.
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  double _opacity = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Плавное появление текста/лого
+    Future.delayed(const Duration(milliseconds: 300), () {
+      setState(() {
+        _opacity = 1.0;
+      });
+    });
+
+    // Переход на регистрацию
+    Future.delayed(const Duration(seconds: 2), () {
+      Navigator.pushReplacementNamed(context, AppRoutes.registration);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => SplashCubit()..startTimer(), // Start the timer when the cubit is created
-      child: BlocListener<SplashCubit, void>(
-        listener: (context, state) {
-          Navigator.pushReplacementNamed(context, '/onboarding'); // Navigate to onboarding screen after timer ends
-        },
-        child: Scaffold(
-          backgroundColor: Color(0xFF246BFD), // Background color of the splash screen
-          body: Center(
-            child: Text(
-              'Toktot', // Application name
-              style: TextStyle(
+    return Scaffold(
+      backgroundColor: const Color(0xFF246BFD),
+      body: Center(
+        child: AnimatedOpacity(
+          opacity: _opacity,
+          duration: const Duration(milliseconds: 1000),
+          curve: Curves.easeInOut,
+          child: Text(
+            'Toktot',
+            style: GoogleFonts.comfortaa(
+              textStyle: const TextStyle(
                 color: Colors.white,
                 fontSize: 48,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
+          // 👉 Хочешь заменить текст на лого — просто замени child:
+          // child: SvgPicture.asset('assets/images/logo.svg', width: 120, height: 120),
         ),
       ),
     );
