@@ -10,6 +10,7 @@ import 'package:toktot_app/ui/widgets/free_park_item.dart';
 
 import '../../cubit/maps_cubit.dart';
 import '../../widgets/filter_bottom_sheet.dart';
+import 'map_full_screen_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -36,12 +37,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final cubit = MapsCubit()..getLocationUpdates(_locationController);
 
-    return SafeArea(
-      child: Scaffold(
-        bottomNavigationBar: BottomNavigation(
-          selectedIndex: selectedIndex,
-        ),
-        body: SingleChildScrollView(
+    return Scaffold(
+      bottomNavigationBar: BottomNavigation(
+        selectedIndex: selectedIndex,
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Column(
@@ -128,8 +129,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           }, suggestionsBuilder:
                               (BuildContext context, SearchController controller) {
                             List<String> items = cubit.getMarkersNameMock();
-
-                            return List<ListTile>.generate(5, (int index) {
+        
+                            return List<ListTile>.generate(items.length, (int index) {
                               final String item = items[index];
                               return ListTile(
                                 title: Text(item),
@@ -155,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             onPressed: () {
                               showModalBottomSheet(
                                 isScrollControlled: true,
-
+        
                                 context: context,
                                 shape: const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.vertical(
@@ -180,36 +181,46 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(20),
                     clipBehavior: Clip.hardEdge,
                     child: Container(
-                      height: MediaQuery.of(context).size.height * 0.3,
+                      height: MediaQuery.of(context).size.height * 0.38,
                       child: Stack(
                         children: [
                           Positioned.fill(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: BlocBuilder(
-                                bloc: cubit,
-                                builder: (context, state) {
-                                  Map<PolylineId, Polyline> polylines = {};
+                            child: GestureDetector(
+                              onTap: () {
+                                // MAKE NAVIGATION TO MapFullScreenPage     !!!!!!!!!!!!
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => const MapFullScreenPage(),
+                                  ),
+                                );
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: BlocBuilder(
+                                  bloc: cubit,
+                                  builder: (context, state) {
+                                    Map<PolylineId, Polyline> polylines = {};
 
-                                  if (state is MapsInitial) {
-                                    polylines = state.polylines;
-                                  }
+                                    if (state is MapsInitial) {
+                                      polylines = state.polylines;
+                                    }
 
-                                  return GoogleMap(
-                                    onMapCreated:
-                                        (GoogleMapController controller) => cubit
-                                        .mapController
-                                        .complete(controller),
-                                    initialCameraPosition: _kGooglePlex,
-                                    myLocationEnabled: true,
-                                    myLocationButtonEnabled: false,
-                                    // Disable default button
-                                    mapToolbarEnabled: false,
-                                    zoomControlsEnabled: false,
-                                    markers: cubit.getMarkers(context),
-                                    polylines: Set<Polyline>.of(polylines.values),
-                                  );
-                                },
+                                    return GoogleMap(
+                                      onMapCreated:
+                                          (GoogleMapController controller) => cubit
+                                          .mapController
+                                          .complete(controller),
+                                      initialCameraPosition: _kGooglePlex,
+                                      myLocationEnabled: true,
+                                      myLocationButtonEnabled: false,
+                                      // Disable default button
+                                      mapToolbarEnabled: false,
+                                      zoomControlsEnabled: false,
+                                      markers: cubit.getMockMarkers(context),
+                                      polylines: Set<Polyline>.of(polylines.values),
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                           ),
@@ -240,7 +251,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: ElevatedButton.icon(
                               icon: Icon(Icons.flag_outlined, color: Colors.white),
                               iconAlignment: IconAlignment.start,
-                              onPressed: () {},
+                              onPressed: () {
+
+                              },
                               label: Text("Найти ближайшую парковку",
                                   style: GoogleFonts.comfortaa(
                                       textStyle: TextStyle(

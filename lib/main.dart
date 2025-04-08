@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:toktot_app/ui/screens/history/history_screen.dart';
 import 'package:toktot_app/ui/screens/home/home_screen.dart';
 import 'package:toktot_app/ui/screens/onboard/onboarding_screen.dart';
@@ -8,7 +9,8 @@ import 'package:toktot_app/ui/screens/registration/consent/consent_screen.dart';
 import 'package:toktot_app/ui/screens/registration/registration_screen.dart';
 import 'package:toktot_app/ui/screens/splash/splash_screen.dart';
 
-void main() {
+void main() async{
+  await dotenv.load(fileName: ".env");
   runApp(const Navigation());
 }
 
