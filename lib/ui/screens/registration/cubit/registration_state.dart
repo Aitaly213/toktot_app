@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-// Base state class
 abstract class RegistrationState extends Equatable {
   const RegistrationState();
 
@@ -8,10 +7,8 @@ abstract class RegistrationState extends Equatable {
   List<Object?> get props => [];
 }
 
-// Initial state
 class RegistrationInitial extends RegistrationState {}
 
-// State with phone number error
 class RegistrationPhoneError extends RegistrationState {
   final String phoneError;
 
@@ -21,7 +18,6 @@ class RegistrationPhoneError extends RegistrationState {
   List<Object?> get props => [phoneError];
 }
 
-// State with terms error
 class RegistrationTermsError extends RegistrationState {
   final String termsError;
 
@@ -31,5 +27,4 @@ class RegistrationTermsError extends RegistrationState {
   List<Object?> get props => [termsError];
 }
 
-// State when registration is valid
 class RegistrationValid extends RegistrationState {}

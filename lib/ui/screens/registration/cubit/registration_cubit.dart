@@ -1,6 +1,6 @@
-import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
-import 'registration_state.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:toktot_app/ui/screens/registration/cubit/registration_state.dart';
 
 class RegistrationCubit extends Cubit<RegistrationState> {
   final TextEditingController phoneController = TextEditingController();
@@ -10,7 +10,7 @@ class RegistrationCubit extends Cubit<RegistrationState> {
 
   void setPhone(String phone) {
     if (phone.length != 9) {
-      emit(RegistrationPhoneError('Заполните поле. (9 цифр)'));
+      emit(const RegistrationPhoneError('Заполните поле. (9 цифр)'));
     } else {
       emit(RegistrationInitial());
       validate();
@@ -20,7 +20,7 @@ class RegistrationCubit extends Cubit<RegistrationState> {
   void setAcceptTerms(bool accept) {
     acceptTerms = accept;
     if (!accept) {
-      emit(RegistrationTermsError('Вы не приняли политику конфиденциальности.'));
+      emit(const RegistrationTermsError('Вы не приняли политику конфиденциальности.'));
     } else {
       emit(RegistrationInitial());
       validate();
@@ -56,6 +56,6 @@ class RegistrationCubit extends Cubit<RegistrationState> {
   }
 
   Future<void> sendOtpCode() async {
-    // Implement your Firebase OTP code sending logic here
+    // TODO: Add OTP sending logic
   }
 }

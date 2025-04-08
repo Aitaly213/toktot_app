@@ -4,12 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:toktot_app/navigation/routs/routs.dart';
+import 'package:toktot_app/navigation/routs/app_routes.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'registration_cubit.dart';
-import 'registration_state.dart';
-import '../../../theme/app_colors.dart';
+import '../../../themes/app_colors.dart';
+import 'cubit/registration_cubit.dart';
+import 'cubit/registration_state.dart';
 import '../../../utils/PhoneInputFormatter.dart';
 
 class RegistrationScreen extends StatelessWidget {
@@ -22,12 +22,13 @@ class RegistrationScreen extends StatelessWidget {
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         body: SafeArea(
-          child: BlocBuilder<RegistrationCubit, RegistrationState>(
-            builder: (context, state) {
-              final cubit = context.read<RegistrationCubit>();
+          child: GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: BlocBuilder<RegistrationCubit, RegistrationState>(
+              builder: (context, state) {
+                final cubit = context.read<RegistrationCubit>();
 
-              return SingleChildScrollView(
-                child: Padding(
+                return SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -39,7 +40,7 @@ class RegistrationScreen extends StatelessWidget {
                           onPressed: () {
                             BlocProvider.of<RegistrationCubit>(context).close();
                             Navigator.pushNamedAndRemoveUntil(
-                                context, Routs.home, (route) => false);
+                                context, AppRoutes.home, (route) => false);
                           },
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -77,7 +78,7 @@ class RegistrationScreen extends StatelessWidget {
                         style: GoogleFonts.comfortaa(
                           textStyle: const TextStyle(
                             fontSize: 16,
-                            color: AppColors.textGrey,
+                            color: AppColors.blueGray,
                           ),
                         ),
                       ),
@@ -106,6 +107,18 @@ class RegistrationScreen extends StatelessWidget {
                           hintText: '(XXX) XX-XX-XX',
                           filled: true,
                           fillColor: const Color(0xFFF1F1F1),
+                          prefixIcon: Padding(
+                            padding: const EdgeInsets.only(left: 12, top: 15),
+                            child: Text(
+                              '+996',
+                              style: GoogleFonts.comfortaa(
+                                textStyle: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
                             borderSide: BorderSide(
@@ -117,25 +130,15 @@ class RegistrationScreen extends StatelessWidget {
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
-                            borderSide: const BorderSide(
-                              color: Colors.transparent,
-                              width: 1,
-                            ),
+                            borderSide: const BorderSide(color: Colors.transparent),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
                             borderSide: BorderSide(
                               color: state is RegistrationPhoneError
                                   ? Colors.red
-                                  : Colors.transparent,
+                                  : AppColors.blue,
                               width: 1,
-                            ),
-                          ),
-                          prefixText: '+996 ',
-                          prefixStyle: GoogleFonts.comfortaa(
-                            textStyle: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 15,
                             ),
                           ),
                           errorText: state is RegistrationPhoneError
@@ -148,8 +151,8 @@ class RegistrationScreen extends StatelessWidget {
                           LengthLimitingTextInputFormatter(9),
                           phoneMaskFormatter,
                         ],
-                        onChanged: (value) => cubit
-                            .setPhone(phoneMaskFormatter.getUnmaskedText()),
+                        onChanged: (value) =>
+                            cubit.setPhone(phoneMaskFormatter.getUnmaskedText()),
                       ),
                       const SizedBox(height: 30),
                       Row(
@@ -159,7 +162,7 @@ class RegistrationScreen extends StatelessWidget {
                             value: cubit.acceptTerms,
                             onChanged: (value) =>
                                 cubit.setAcceptTerms(value ?? false),
-                            activeColor: AppColors.bluePrimary,
+                            activeColor: AppColors.blue,
                             checkColor: Colors.white,
                           ),
                           Expanded(
@@ -177,7 +180,7 @@ class RegistrationScreen extends StatelessWidget {
                                     text: "политику конфиденциальности",
                                     style: GoogleFonts.comfortaa(
                                       textStyle: const TextStyle(
-                                        color: AppColors.bluePrimary,
+                                        color: AppColors.blue,
                                         decoration: TextDecoration.underline,
                                       ),
                                     ),
@@ -191,7 +194,7 @@ class RegistrationScreen extends StatelessWidget {
                                             mode: LaunchMode.externalApplication,
                                           );
                                         } else {
-                                          throw "Не удалось открыть $url";
+                                          throw "Не удалось открыть \$url";
                                         }
                                       },
                                   ),
@@ -225,8 +228,8 @@ class RegistrationScreen extends StatelessWidget {
                             : null,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: state is RegistrationValid
-                              ? AppColors.bluePrimary
-                              : AppColors.disableGrey,
+                              ? AppColors.blue
+                              : AppColors.blueGray,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           textStyle: GoogleFonts.comfortaa(
                             textStyle: const TextStyle(
@@ -244,9 +247,9 @@ class RegistrationScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       ),

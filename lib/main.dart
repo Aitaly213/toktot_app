@@ -3,17 +3,16 @@ import 'package:toktot_app/ui/screens/code_verification/code_verification_screen
 import 'package:toktot_app/ui/screens/consent/consent_screen.dart';
 import 'package:toktot_app/ui/screens/history/history_screen.dart';
 import 'package:toktot_app/ui/screens/home/home_screen.dart';
+import 'package:toktot_app/ui/screens/photo/photo_screen.dart';
 import 'package:toktot_app/ui/screens/profile/profile_screen.dart';
 import 'package:toktot_app/ui/screens/registration/registration_screen.dart';
 import 'package:toktot_app/ui/screens/splash/splash_screen.dart';
-import 'package:toktot_app/ui/screens/user_name/username_screen.dart';
-import 'navigation/routs/routs.dart';
+import 'package:toktot_app/navigation/routs/app_routes.dart';
 
 void main() {
   runApp(const Navigation());
 }
 
-/// The main widget for the navigation system of the app.
 class Navigation extends StatelessWidget {
   const Navigation({super.key});
 
@@ -21,35 +20,31 @@ class Navigation extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Toktot',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Colors.white,
+        fontFamily: 'Comfortaa',
       ),
-      initialRoute: Routs.splash,
+      initialRoute: AppRoutes.splash,
+      routes: {
+        AppRoutes.splash: (_) => const SplashScreen(),
+        AppRoutes.registration: (_) => const RegistrationScreen(),
+        AppRoutes.consent: (_) => const ConsentScreen(),
+        AppRoutes.home: (_) => const HomeScreen(),
+        AppRoutes.history: (_) => const HistoryScreen(),
+        AppRoutes.profile: (_) => const ProfileScreen(),
+        AppRoutes.photo: (_) => const PhotoScreen(),
+      },
       onGenerateRoute: (settings) {
-        final routeBuilder = _routeBuilders[settings.name];
-        if (routeBuilder != null) {
+        if (settings.name == AppRoutes.codeVerification) {
+          final phoneNumber = settings.arguments as String;
           return MaterialPageRoute(
-            builder: (_) => routeBuilder(settings.arguments),
+            builder: (_) => CodeVerificationScreen(phoneNumber: phoneNumber),
           );
         }
-        return null; // Return null for unknown routes
+        return null;
       },
     );
-  }
-
-  Map<String, Widget Function(Object?)> get _routeBuilders {
-    return {
-      Routs.splash: (_) => const SplashScreen(),
-      Routs.registration: (_) => const RegistrationScreen(),
-      Routs.consent: (_) => const ConsentScreen(),
-      Routs.codeVerification: (args) {
-        final phoneNumber = args as String;
-        return CodeVerificationScreen(phoneNumber: phoneNumber);
-      },
-      Routs.userName: (_) => UsernameScreen(),
-      Routs.home: (_) => const HomeScreen(),
-      Routs.history: (_) => const HistoryScreen(),
-      Routs.profile: (_) => const ProfileScreen(),
-    };
   }
 }
