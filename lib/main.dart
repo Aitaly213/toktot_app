@@ -9,7 +9,8 @@ import 'package:toktot_app/ui/screens/registration/registration_screen.dart';
 import 'package:toktot_app/ui/screens/splash/splash_screen.dart';
 import 'package:toktot_app/navigation/routs/app_routes.dart';
 
-void main() {
+void main() async{
+  await dotenv.load(fileName: ".env");
   runApp(const Navigation());
 }
 

@@ -45,7 +45,6 @@ class _BottomNavigationState extends State<BottomNavigation> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 5),
       // Add vertical spacing
       margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
       // Margin to create floating effect
@@ -82,11 +81,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
       icon: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: isSelected
-              ? Colors.blue
+              ? AppColors.blue
               : Colors.transparent, // Синий круг вокруг активного элемента
         ),
         child: SvgPicture.asset(
