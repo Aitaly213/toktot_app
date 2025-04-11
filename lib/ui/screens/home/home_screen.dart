@@ -8,6 +8,7 @@ import 'package:toktot_app/themes/app_colors.dart';
 import 'package:toktot_app/ui/widgets/bottom_nav.dart';
 import 'package:toktot_app/ui/widgets/free_park_item.dart';
 
+import '../../../navigation/routs/app_routes.dart';
 import '../../cubit/maps_cubit.dart';
 import '../../widgets/filter_bottom_sheet.dart';
 import 'map_full_screen_page.dart';
@@ -32,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final args =
-    ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     int selectedIndex = args?['selectedIndex'] ?? 1;
 
     final cubit = MapsCubit()..getLocationUpdates(_locationController);
@@ -44,7 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Column(
               children: [
                 Padding(
@@ -54,9 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Text("Балланс",
                         style: GoogleFonts.comfortaa(
                             textStyle: TextStyle(
-                              color: AppColors.blueGeraint,
-                              fontSize: 14,
-                            ))),
+                          color: AppColors.blueGeraint,
+                          fontSize: 14,
+                        ))),
                   ),
                 ),
                 Padding(
@@ -82,8 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             elevation: 0,
                             backgroundColor: AppColors.blue,
                             onPressed: () {
-                              Navigator.pushNamed(context, "routeName");
-                                  // todo nav balance
+                              _showBalanceTopUpDialog(context);
                             },
                             shape: CircleBorder(),
                             child: Icon(Icons.add, color: Colors.white),
@@ -100,21 +101,22 @@ class _HomeScreenState extends State<HomeScreen> {
                       Expanded(
                         child: Container(
                           height: 34,
-                          child: SearchAnchor(builder:
-                              (BuildContext context, SearchController controller) {
+                          child: SearchAnchor(builder: (BuildContext context,
+                              SearchController controller) {
                             return SearchBar(
                               elevation: WidgetStatePropertyAll(0),
                               hintText: "Поиск места для парковки",
                               hintStyle:
-                              WidgetStateProperty.all(GoogleFonts.comfortaa(
-                                  textStyle: TextStyle(
-                                    color: AppColors.blueGray,
-                                    fontSize: 10,
-                                  ))),
+                                  WidgetStateProperty.all(GoogleFonts.comfortaa(
+                                      textStyle: TextStyle(
+                                color: AppColors.blueGray,
+                                fontSize: 10,
+                              ))),
                               controller: controller,
                               padding: const WidgetStatePropertyAll<EdgeInsets>(
                                   EdgeInsets.symmetric(horizontal: 10)),
-                              shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                              shape:
+                                  WidgetStatePropertyAll(RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               )),
                               onTap: () {
@@ -129,11 +131,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: AppColors.blue,
                               ),
                             );
-                          }, suggestionsBuilder:
-                              (BuildContext context, SearchController controller) {
+                          }, suggestionsBuilder: (BuildContext context,
+                              SearchController controller) {
                             List<String> items = cubit.getMarkersNameMock();
-        
-                            return List<ListTile>.generate(items.length, (int index) {
+
+                            return List<ListTile>.generate(items.length,
+                                (int index) {
                               final String item = items[index];
                               return ListTile(
                                 title: Text(item),
@@ -159,14 +162,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             onPressed: () {
                               showModalBottomSheet(
                                 isScrollControlled: true,
-        
                                 context: context,
                                 shape: const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.vertical(
                                       top: Radius.circular(30)),
                                 ),
-                                builder: (context) =>  Container(
-                                    height: MediaQuery.of(context).size.height * 0.8,
+                                builder: (context) => Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.8,
                                     child: FilterBottomSheet()),
                               );
                             },
@@ -210,9 +213,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
                                     return GoogleMap(
                                       onMapCreated:
-                                          (GoogleMapController controller) => cubit
-                                          .mapController
-                                          .complete(controller),
+                                          (GoogleMapController controller) =>
+                                              cubit.mapController
+                                                  .complete(controller),
                                       initialCameraPosition: _kGooglePlex,
                                       myLocationEnabled: true,
                                       myLocationButtonEnabled: false,
@@ -220,7 +223,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       mapToolbarEnabled: false,
                                       zoomControlsEnabled: false,
                                       markers: cubit.getMockMarkers(context),
-                                      polylines: Set<Polyline>.of(polylines.values),
+                                      polylines:
+                                          Set<Polyline>.of(polylines.values),
                                     );
                                   },
                                 ),
@@ -252,17 +256,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             left: 10,
                             right: 10,
                             child: ElevatedButton.icon(
-                              icon: Icon(Icons.flag_outlined, color: Colors.white),
+                              icon: Icon(Icons.flag_outlined,
+                                  color: Colors.white),
                               iconAlignment: IconAlignment.start,
-                              onPressed: () {
-
-                              },
+                              onPressed: () {},
                               label: Text("Найти ближайшую парковку",
                                   style: GoogleFonts.comfortaa(
                                       textStyle: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 13,
-                                      ))),
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                  ))),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.blue,
                                 shape: RoundedRectangleBorder(
@@ -296,4 +299,92 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
+
+void _showBalanceTopUpDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    barrierColor: Colors.black.withOpacity(0.6),
+    builder: (context) => Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.5,
+          maxWidth: MediaQuery.of(context).size.width * 0.85,
+        ),
+        child: Material(
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
+            child: Stack(
+              children: [
+                SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Пополнить баланс',
+                        style: GoogleFonts.comfortaa(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      _buildBalanceOption(
+                        iconPath: 'assets/icons/wallet.svg',
+                        label: 'Мобильный кошелек',
+                        onTap: () {
+                          Navigator.pop(context);
+                          // TODO: реализация позже
+                        },
+                      ),
+                      const Divider(height: 24),
+                      _buildBalanceOption(
+                        iconPath: 'assets/icons/card.svg',
+                        label: 'Банковская карта',
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.pushNamed(context, AppRoutes.bankCardPayment);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  top: -12,
+                  right: -12,
+                  child: IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget _buildBalanceOption(
+    {required String iconPath,
+    required String label,
+    required VoidCallback onTap}) {
+  return InkWell(
+    onTap: onTap,
+    child: Row(
+      children: [
+        SvgPicture.asset(iconPath, height: 24),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            label,
+            style: GoogleFonts.comfortaa(fontSize: 14),
+          ),
+        ),
+        const Icon(Icons.arrow_forward_ios, size: 14),
+      ],
+    ),
+  );
 }

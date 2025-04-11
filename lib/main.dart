@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:toktot_app/ui/screens/bankCardPayment/bank_card_payment_screen.dart';
 import 'package:toktot_app/ui/screens/code_verification/code_verification_screen.dart';
 import 'package:toktot_app/ui/screens/consent/consent_screen.dart';
 import 'package:toktot_app/ui/screens/history/history_screen.dart';
@@ -37,6 +38,7 @@ class Navigation extends StatelessWidget {
         AppRoutes.history: (_) => const HistoryScreen(),
         AppRoutes.profile: (_) => const ProfileScreen(),
         AppRoutes.photo: (_) => const PhotoScreen(),
+        AppRoutes.bankCardPayment: (_) => const BankCardPaymentScreen(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == AppRoutes.codeVerification) {
