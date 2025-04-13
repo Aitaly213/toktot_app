@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     // Переход на регистрацию
     Future.delayed(const Duration(seconds: 2), () {
-      Navigator.pushReplacementNamed(context, AppRoutes.registration);
+      Navigator.pushReplacementNamed(context, AppRoutes.bankCardPayment);
     });
   }
 

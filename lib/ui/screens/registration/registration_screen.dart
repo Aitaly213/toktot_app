@@ -10,7 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../themes/app_colors.dart';
 import 'cubit/registration_cubit.dart';
 import 'cubit/registration_state.dart';
-import '../../../utils/PhoneInputFormatter.dart';
+import '../../../utils/input_formatter.dart';
 
 class RegistrationScreen extends StatelessWidget {
   const RegistrationScreen({super.key});
