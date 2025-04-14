@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../navigation/routs/app_routes.dart';
 
@@ -27,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     // Переход на регистрацию
     Future.delayed(const Duration(seconds: 2), () {
-      Navigator.pushReplacementNamed(context, AppRoutes.bankCardPayment);
+      Navigator.pushReplacementNamed(context, AppRoutes.registration);
     });
   }
 
