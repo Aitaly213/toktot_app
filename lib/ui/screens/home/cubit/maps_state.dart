@@ -13,7 +13,13 @@ sealed class MapsState extends Equatable {
   List<Object> get props => [polylines];
 }
 
- class MapsLocation extends MapsState {
-  @override
-  List<Object?> get props => [];
+class MapsUpdated extends MapsState {
+ final Map<PolylineId, Polyline> polylines;
+
+ const MapsUpdated({this.polylines = const {}});
+
+ @override
+ List<Object> get props => [polylines];
 }
+
+

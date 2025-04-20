@@ -37,11 +37,10 @@ class PhotoScreen extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 47),
-                    SvgPicture.asset(
-                      'assets/images/placeholder.svg',
-                      height: 300,
-                      width: 230,
-                      fit: BoxFit.contain,
+                    Image.asset(
+                      'assets/images/make_photo.jpg',
+                      width: 300,
+                      height: 230,
                     ),
                     const SizedBox(height: 48),
                     Text(

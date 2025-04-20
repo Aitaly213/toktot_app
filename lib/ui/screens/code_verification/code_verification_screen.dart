@@ -74,8 +74,8 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SvgPicture.asset(
-                  'assets/images/placeholder.svg',
+                Image.asset(
+                  'assets/images/code_verification.jpg',
                   width: 235,
                   height: 182,
                 ),

@@ -40,8 +40,8 @@ class ConsentScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 40),
-                    SvgPicture.asset(
-                      'assets/images/placeholder.svg',
+                    Image.asset(
+                      'assets/images/consent.jpg',
                       width: 323,
                       height: 240,
                     ),

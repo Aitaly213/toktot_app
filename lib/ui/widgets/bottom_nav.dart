@@ -4,8 +4,10 @@ import 'package:toktot_app/themes/app_colors.dart';
 
 class BottomNavigation extends StatefulWidget {
   final int selectedIndex;
+  final int blurRadius;
+  final int spreadRadius;
 
-  const BottomNavigation({super.key, required this.selectedIndex});
+  const BottomNavigation({super.key, required this.selectedIndex, this.blurRadius = 0,this.spreadRadius = 0});
 
   @override
   _BottomNavigationState createState() => _BottomNavigationState();
@@ -13,11 +15,15 @@ class BottomNavigation extends StatefulWidget {
 
 class _BottomNavigationState extends State<BottomNavigation> {
   late int _selectedIndex; // Default to Home
+  late int _blurRadius;
+  late int _spreadRadius;
 
   @override
   void initState() {
     super.initState();
     _selectedIndex = widget.selectedIndex;
+    _blurRadius = widget.blurRadius;
+    _spreadRadius = widget.spreadRadius;
   }
 
   void _onItemTapped(int index) {
@@ -41,31 +47,24 @@ class _BottomNavigationState extends State<BottomNavigation> {
       );
     }
   }
-
-  @override
   Widget build(BuildContext context) {
     return Container(
-      // Add vertical spacing
       margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-      // Margin to create floating effect
       decoration: BoxDecoration(
-        color: AppColors.lightGray, // Background color
-        borderRadius: BorderRadius.circular(20), // Rounded corners
+        color: AppColors.lightGray,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.4),
+            blurRadius: _blurRadius.toDouble(),
+            spreadRadius: _spreadRadius.toDouble(),
+          )
+        ]
       ),
-      child: BottomNavigationBar(
-        backgroundColor: Colors.transparent,
-        // Transparent since Container handles color
-        elevation: 0,
-        // Remove default elevation
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed,
-        // Keeps icons centered
-        showSelectedLabels: false,
-        // Hide labels
-        showUnselectedLabels: false,
-        // Hide labels
-        items: [
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
           _buildNavItem('assets/images/ic_history.svg', 0),
           _buildNavItem('assets/images/ic_home.svg', 1),
           _buildNavItem('assets/images/ic_profile.svg', 2),
@@ -74,30 +73,26 @@ class _BottomNavigationState extends State<BottomNavigation> {
     );
   }
 
-  BottomNavigationBarItem _buildNavItem(String iconPath, int index) {
+  Widget _buildNavItem(String iconPath, int index) {
     bool isSelected = _selectedIndex == index;
 
-    return BottomNavigationBarItem(
-      icon: AnimatedContainer(
+    return GestureDetector(
+      onTap: () => _onItemTapped(index),
+      child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isSelected
-              ? AppColors.blue
-              : Colors.transparent, // Синий круг вокруг активного элемента
+          color: isSelected ? AppColors.blue : Colors.transparent,
         ),
         child: SvgPicture.asset(
           iconPath,
           width: 24,
           height: 24,
-          color: isSelected
-              ? Colors.white
-              : Colors.black, // Белая иконка, если активна
+          color: isSelected ? Colors.white : Colors.black,
         ),
       ),
-      label: '',
     );
   }
+
 }

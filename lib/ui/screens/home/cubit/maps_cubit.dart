@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -13,7 +14,8 @@ import 'package:location/location.dart';
 import 'package:toktot_app/data/models/marker_model/marker_model.dart';
 import 'package:toktot_app/themes/app_colors.dart';
 
-import '../../data/models/marker_model/mock_markers.dart';
+import '../../../../data/models/marker_model/mock_markers.dart';
+
 
 part 'maps_state.dart';
 
@@ -28,10 +30,19 @@ class MapsCubit extends Cubit<MapsState> {
   Completer<GoogleMapController> mapController =
       Completer<GoogleMapController>();
 
-  static const _posDestination = LatLng(42.828061, 74.601591);
+ // static const _posDestination = LatLng(42.828061, 74.601591);
 
   // bool isLocated = false;
-  LatLng currentP = LatLng(42.828061, 74.991591);
+  LatLng? currentP = null;
+
+  GoogleMapController? controller;
+
+  void setController(GoogleMapController c) {
+    controller = c;
+    if (!mapController.isCompleted) {
+      mapController.complete(c);
+    }
+  }
 
   Future<void> cameraToPosition(
     LatLng position,
@@ -72,20 +83,28 @@ class MapsCubit extends Cubit<MapsState> {
         // if(currentP != null){
         //   isLocated = true;
         // }
-        //cameraToPosition(currentP!);
+
+        emit(MapsUpdated(polylines: Map.of(polylines)));
       }
     });
   }
 
   void startNavigation(LatLng destination) async {
+    if (currentP == null) {
+      print('⚠️ currentP is null, невозможно построить маршрут');
+      // можно показать SnackBar или AlertDialog
+      return;
+    }
+
     List<LatLng> coordinates =
-        await getPolylinePointsBetween(currentP!, destination);
+    await getPolylinePointsBetween(currentP!, destination);
     print(coordinates);
     generatePolylineFromPoints(coordinates);
   }
 
-  Future<List<LatLng>> getPolylinePoints() async {
-    return await getPolylinePointsBetween(currentP, _posDestination);
+
+  Future<List<LatLng>> getPolylinePoints(LatLng destination) async {
+    return await getPolylinePointsBetween(currentP!, destination);
   }
 
   Future<List<LatLng>> getPolylinePointsBetween(
@@ -132,9 +151,9 @@ class MapsCubit extends Cubit<MapsState> {
           markerModel.longitude.toDouble(),
         ),
         infoWindow: InfoWindow(title: markerModel.name),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
         onTap: () {
-          _showNavigationSheet(
+          showNavigationSheet(
             LatLng(
               markerModel.latitude,
               markerModel.longitude,
@@ -151,7 +170,63 @@ class MapsCubit extends Cubit<MapsState> {
     return mockMarkers.map((marker) => marker.name).toList();
   }
 
-  void _showNavigationSheet(
+  MarkerModel? getNearestMarker() {
+    if (currentP == null) return null;
+
+    MarkerModel? nearestMarker;
+    double shortestDistance = double.infinity;
+
+    for (var marker in mockMarkers) {
+      final markerLatLng = LatLng(marker.latitude, marker.longitude);
+      final distance = _calculateDistance(currentP!, markerLatLng);
+
+      if (distance < shortestDistance) {
+        shortestDistance = distance;
+        nearestMarker = marker;
+      }
+    }
+
+    return nearestMarker;
+  }
+
+  double _calculateDistance(LatLng a, LatLng b) {
+    const double earthRadius = 6371000; // в метрах
+
+    double dLat = _degToRad(b.latitude - a.latitude);
+    double dLng = _degToRad(b.longitude - a.longitude);
+
+    double lat1 = _degToRad(a.latitude);
+    double lat2 = _degToRad(b.latitude);
+
+    double aCalc =
+        sin(dLat / 2) * sin(dLat / 2) +
+            sin(dLng / 2) * sin(dLng / 2) * cos(lat1) * cos(lat2);
+
+    double c = 2 * atan2(sqrt(aCalc), sqrt(1 - aCalc));
+    return earthRadius * c;
+  }
+
+  double _degToRad(double deg) => deg * (pi / 180);
+
+  List<MarkerModel> getBestParks()  {
+    if (currentP == null) return [];
+    final available = mockMarkers
+        .where((e) => e.carsInTheParking < e.maxCarsInTheParking)
+        .toList();
+
+    available.sort((a, b) {
+      final aDist = _calculateDistance(currentP!, LatLng(a.latitude, a.longitude));
+      final bDist = _calculateDistance(currentP!, LatLng(b.latitude, b.longitude));
+      return aDist.compareTo(bDist);
+    });
+
+    return available.take(2).toList();
+  }
+
+
+
+
+  void showNavigationSheet(
       LatLng destination, BuildContext context, MarkerModel marker) {
     showModalBottomSheet(
       context: context,
@@ -335,6 +410,8 @@ class MapsCubit extends Cubit<MapsState> {
       ),
     );
   }
+
+
 
 
   Widget _tabWithBadge(String label, int count) {

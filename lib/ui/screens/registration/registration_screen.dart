@@ -84,11 +84,12 @@ class RegistrationScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 23),
                       Center(
-                        child: SvgPicture.asset(
-                          'assets/images/placeholder.svg',
-                          width: 235,
-                          height: 182,
-                        ),
+                        child:
+                          Image.asset(
+                            'assets/images/registration.jpg',
+                            width: 235,
+                            height: 182,
+                          )
                       ),
                       const SizedBox(height: 20),
                       Text(
