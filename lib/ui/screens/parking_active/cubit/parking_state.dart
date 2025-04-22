@@ -1,6 +1,17 @@
 part of 'parking_cubit.dart';
 
-@immutable
-sealed class ParkingState {}
+abstract class ParkingState {}
 
-final class ParkingInitial extends ParkingState {}
+class ParkingInitial extends ParkingState {}
+
+class ParkingTicking extends ParkingState {
+  final String time;
+
+  ParkingTicking({required this.time});
+}
+
+class ParkingFinished extends ParkingState {
+  final String time;
+
+  ParkingFinished({required this.time});
+}

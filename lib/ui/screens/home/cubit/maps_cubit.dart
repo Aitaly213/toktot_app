@@ -20,9 +20,7 @@ import '../../../../data/models/marker_model/mock_markers.dart';
 part 'maps_state.dart';
 
 class MapsCubit extends Cubit<MapsState> {
-  MapsCubit() : super(MapsInitial()) {
-    emit(MapsInitial(polylines: {}));
-  }
+  MapsCubit() : super(const MapsState());
 
   Map<PolylineId, Polyline> polylines = {};
   final apiKey = dotenv.env['GOOGLE_API_KEY'];
@@ -30,7 +28,11 @@ class MapsCubit extends Cubit<MapsState> {
   Completer<GoogleMapController> mapController =
       Completer<GoogleMapController>();
 
- // static const _posDestination = LatLng(42.828061, 74.601591);
+  StreamSubscription<LocationData>? _locationSubscription;
+
+
+
+  // static const _posDestination = LatLng(42.828061, 74.601591);
 
   // bool isLocated = false;
   LatLng? currentP = null;
@@ -56,38 +58,30 @@ class MapsCubit extends Cubit<MapsState> {
   }
 
   Future<void> getLocationUpdates(Location locationController) async {
-    bool serviceEnabled;
-    PermissionStatus permissionGranted;
-
-    serviceEnabled = await locationController.serviceEnabled();
+    bool serviceEnabled = await locationController.serviceEnabled();
     if (!serviceEnabled) {
       serviceEnabled = await locationController.requestService();
-      if (!serviceEnabled) {
-        return;
-      }
+      if (!serviceEnabled) return;
     }
 
-    permissionGranted = await locationController.hasPermission();
+    PermissionStatus permissionGranted = await locationController.hasPermission();
     if (permissionGranted == PermissionStatus.denied) {
       permissionGranted = await locationController.requestPermission();
-      if (permissionGranted != PermissionStatus.granted) {
-        return;
-      }
+      if (permissionGranted != PermissionStatus.granted) return;
     }
 
-    locationController.onLocationChanged.listen((LocationData currentLocation) {
-      if (currentLocation.latitude != null &&
-          currentLocation.longitude != null) {
-        currentP =
-            LatLng(currentLocation.latitude!, currentLocation.longitude!);
-        // if(currentP != null){
-        //   isLocated = true;
-        // }
+    _locationSubscription =
+        locationController.onLocationChanged.listen((currentLocation) {
+          if (isClosed) return; // ✅ не слушаем, если Cubit уже закрыт
 
-        emit(MapsUpdated(polylines: Map.of(polylines)));
-      }
-    });
+          if (currentLocation.latitude != null &&
+              currentLocation.longitude != null) {
+            currentP = LatLng(currentLocation.latitude!, currentLocation.longitude!);
+            emit(state.copyWith(polylines: Map.of(polylines)));
+          }
+        });
   }
+
 
   void startNavigation(LatLng destination) async {
     if (currentP == null) {
@@ -139,7 +133,8 @@ class MapsCubit extends Cubit<MapsState> {
     );
 
     polylines[id] = polyline;
-    emit(MapsInitial(polylines: Map.of(polylines)));
+    cameraToPosition(currentP!);
+    emit(state.copyWith(polylines: Map.of(polylines)));
   }
 
   Set<Marker> getMockMarkers(BuildContext context) {
@@ -168,6 +163,10 @@ class MapsCubit extends Cubit<MapsState> {
 
   List<String> getMarkersNameMock() {
     return mockMarkers.map((marker) => marker.name).toList();
+  }
+
+  List<MarkerModel> getMarkersMock() {
+    return mockMarkers;
   }
 
   MarkerModel? getNearestMarker() {
@@ -435,6 +434,12 @@ class MapsCubit extends Cubit<MapsState> {
         ],
       ),
     );
+  }
+
+  @override
+  Future<void> close() {
+    _locationSubscription?.cancel(); // ✅ отменяем поток
+    return super.close();
   }
 
 }
