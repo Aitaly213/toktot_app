@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:toktot_app/data/models/marker_model/marker_model.dart';
@@ -9,14 +10,10 @@ import 'package:toktot_app/ui/widgets/bottom_nav.dart';
 import 'package:toktot_app/ui/widgets/expandable_map.dart';
 import 'package:toktot_app/ui/widgets/free_park_item.dart';
 import 'package:toktot_app/ui/widgets/park_active_item.dart';
+import 'package:collection/collection.dart';
 import '../../widgets/search_with_filter_bar.dart';
 import '../parking_active/cubit/parking_cubit.dart';
 import 'cubit/maps_cubit.dart';
-
-import '../../../navigation/routs/app_routes.dart';
-import '../../cubit/maps_cubit.dart';
-import '../../widgets/filter_bottom_sheet.dart';
-import 'map_full_screen_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -68,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Row(
                       children: [
                         Text(
-                          "450,30 сом",
+                          "0 сом",
                           style: GoogleFonts.comfortaa(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -84,7 +81,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               elevation: 0,
                               backgroundColor: AppColors.blue,
                               onPressed: () {
-                                _showBalanceTopUpDialog(context);                              },
+                                _showBalanceTopUpDialog(context);
+                              },
                               shape: const CircleBorder(),
                               child: const Icon(Icons.add, color: Colors.white),
                             ),
@@ -204,6 +202,95 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
           // ],
         ),
+      ),
+    );
+  }
+
+  void _showBalanceTopUpDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.6),
+      builder: (context) => Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.5,
+            maxWidth: MediaQuery.of(context).size.width * 0.85,
+          ),
+          child: Material(
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
+              child: Stack(
+                children: [
+                  SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Пополнить баланс',
+                          style: GoogleFonts.comfortaa(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        _buildBalanceOption(
+                          iconPath: 'assets/icons/wallet.svg',
+                          label: 'Мобильный кошелек',
+                          onTap: () {
+                            Navigator.pop(context);
+                            // TODO: реализация позже
+                          },
+                        ),
+                        const Divider(height: 24),
+                        _buildBalanceOption(
+                          iconPath: 'assets/icons/card.svg',
+                          label: 'Банковская карта',
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.pushNamed(
+                                context, AppRoutes.bankCardPayment);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    top: -12,
+                    right: -12,
+                    child: IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBalanceOption(
+      {required String iconPath,
+      required String label,
+      required VoidCallback onTap}) {
+    return InkWell(
+      onTap: onTap,
+      child: Row(
+        children: [
+          SvgPicture.asset(iconPath, height: 24),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              label,
+              style: GoogleFonts.comfortaa(fontSize: 14),
+            ),
+          ),
+          const Icon(Icons.arrow_forward_ios, size: 14),
+        ],
       ),
     );
   }
