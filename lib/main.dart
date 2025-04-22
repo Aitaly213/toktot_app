@@ -6,6 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:location/location.dart';
 import 'package:toktot_app/navigation/routs/app_routes.dart';
+import 'package:toktot_app/ui/screens/bankCardPayment/bank_card_payment_screen.dart';
 import 'package:toktot_app/ui/screens/code_verification/code_verification_screen.dart';
 import 'package:toktot_app/ui/screens/consent/consent_screen.dart';
 import 'package:toktot_app/ui/screens/history/history_screen.dart';
@@ -36,6 +37,7 @@ Future<void> main() async {
 
   runApp(const Navigation());
 }
+
 class Navigation extends StatelessWidget {
   const Navigation({super.key});
 
@@ -64,6 +66,8 @@ class Navigation extends StatelessWidget {
           AppRoutes.profile: (_) => const ProfileScreen(),
           AppRoutes.photo: (_) => const PhotoScreen(),
           AppRoutes.parkingActive: (_) => const ParkingActiveScreen(),
+          AppRoutes.bankCardPayment: (_) => const BankCardPaymentScreen(),
+
         },
         onGenerateRoute: (settings) {
           if (settings.name == AppRoutes.codeVerification) {

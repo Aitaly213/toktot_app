@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,6 +12,11 @@ import 'package:toktot_app/ui/widgets/park_active_item.dart';
 import '../../widgets/search_with_filter_bar.dart';
 import '../parking_active/cubit/parking_cubit.dart';
 import 'cubit/maps_cubit.dart';
+
+import '../../../navigation/routs/app_routes.dart';
+import '../../cubit/maps_cubit.dart';
+import '../../widgets/filter_bottom_sheet.dart';
+import 'map_full_screen_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -80,8 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               elevation: 0,
                               backgroundColor: AppColors.blue,
                               onPressed: () {
-                                Navigator.pushNamed(context, "routeName");
-                              },
+                                _showBalanceTopUpDialog(context);                              },
                               shape: const CircleBorder(),
                               child: const Icon(Icons.add, color: Colors.white),
                             ),
