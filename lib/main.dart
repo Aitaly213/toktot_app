@@ -20,7 +20,7 @@ import 'package:toktot_app/ui/screens/registration/registration_screen.dart';
 import 'package:toktot_app/ui/screens/splash/splash_screen.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,11 +28,16 @@ Future<void> main() async {
   // 🔐 Загружаем .env
   await dotenv.load(fileName: ".env");
 
-  // 🔔 Инициализация уведомлений
+  // 🔔 Инициализация уведомлений для Android и iOS
   const AndroidInitializationSettings androidInit =
-      AndroidInitializationSettings('@mipmap/ic_launcher');
-  const InitializationSettings initSettings =
-      InitializationSettings(android: androidInit);
+  AndroidInitializationSettings('@mipmap/ic_launcher');
+  const DarwinInitializationSettings iosInit = DarwinInitializationSettings();
+
+  const InitializationSettings initSettings = InitializationSettings(
+    android: androidInit,
+    iOS: iosInit,
+  );
+
   await flutterLocalNotificationsPlugin.initialize(initSettings);
 
   runApp(const Navigation());
@@ -67,7 +72,6 @@ class Navigation extends StatelessWidget {
           AppRoutes.photo: (_) => const PhotoScreen(),
           AppRoutes.parkingActive: (_) => const ParkingActiveScreen(),
           AppRoutes.bankCardPayment: (_) => const BankCardPaymentScreen(),
-
         },
         onGenerateRoute: (settings) {
           if (settings.name == AppRoutes.codeVerification) {
